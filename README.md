@@ -1,5 +1,7 @@
 # ABAC Access Policy Decision Point
 
+[![CI Gate](https://github.com/virtru/access-pdp/actions/workflows/ci.yaml/badge.svg)](https://github.com/virtru/access-pdp/actions/workflows/ci.yaml)
+
 A reference implementation of an Attribute Based Access Control (ABAC) Access Policy Decision Point (PDP)
 
 ## What's an Access PDP, and how does it fit into an ABAC system?
