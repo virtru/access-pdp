@@ -1,4 +1,4 @@
-name: CI Gate
+name: Quality Gate
 env:
   COVERAGE_THRESH_PCT: 81
 
