@@ -1,6 +1,6 @@
 name: CI Gate
 env:
-  COVERAGE_THRESH_PCT: 90
+  COVERAGE_THRESH_PCT: 81
 
 on:
   pull_request:
