@@ -21,4 +21,4 @@ jobs:
         run: |
           git pull
           export latest="$(git describe --tags `git rev-list --tags --max-count=1`)"
-          curl https://proxy.golang.org/github.com/akhettar/docker-db/@v/$latest.info
+          curl https://proxy.golang.org/github.com/virtru/access-pdp/@v/$latest.info
