@@ -6,31 +6,31 @@ import (
 	"strings"
 )
 
-// An AttributeInstance is created by selecting the Authority, Name and a specific Value from
-// an attributes.AttributeDefinition.
+// AttributeInstance is created by selecting the Authority, Name and a specific Value from
+// an AttributeDefinition.
 //
 // An AttributeInstance is a single, unique attribute, with a single value.
 //
-// Applied to an entity, the AttributeInstance becomes an entity attribute
-// Applied to data, the AttributeInstance becomes a data attribute
+// Applied to an entity, the AttributeInstance becomes an entity attribute.
+// Applied to data, the AttributeInstance becomes a data attribute.
 //
-// When making an access decisions, these two kinds of attribute instances are compared with each other.
+// When making an access decisions, these two kinds of AttributeInstances are compared with each other.
 //
 // Example AttributeInstance:
 // https://derp.com/attr/Blob/value/Green ->
-// Authority = https://derp.com
-// Name = Blob
-// Namespace = Authority + Name https://derp.com/attr/Blob
-// Value = Green
+//  Authority = https://derp.com
+//  Name = Blob
+//  CanonicalName = Authority + Name https://derp.com/attr/Blob
+//  Value = Green
 type AttributeInstance struct {
 	Authority string `json:"authority"`
 	Name      string `json:"name"`
 	Value     string `json:"value"`
 }
 
-//Implement the standard "stringify" interface
-//and return a string in the canonical attribute instance format of
-// <authority>/attr/<name>/value/<value>
+// Implement the standard "stringify" interface
+// and return a string in the canonical attribute instance format of
+//  <authority>/attr/<name>/value/<value>
 func (attr AttributeInstance) String() string {
 	return fmt.Sprintf("%s/attr/%s/value/%s",
 		attr.Authority,
@@ -40,8 +40,8 @@ func (attr AttributeInstance) String() string {
 }
 
 // For cases where just the canonical name of this AttributeInstance is required
-// (e.g. <authority>/attr/<name> - the authority and name, but not the value)
-// <authority>/attr/<name>
+// (e.g. <authority>/attr/<name> - the authority and name, but not the value):
+//  <authority>/attr/<name>
 func (attr AttributeInstance) GetCanonicalName() string {
 	return fmt.Sprintf("%s/attr/%s",
 		attr.Authority,
@@ -65,7 +65,7 @@ func ParseInstanceFromURI(attributeURI string) (AttributeInstance, error) {
 		return AttributeInstance{}, err
 	}
 
-	//Needs to be absolute - that is, rooted with a scheme, and not relative.
+	// Needs to be absolute - that is, rooted with a scheme, and not relative.
 	if !parsedAttr.IsAbs() {
 		return AttributeInstance{}, fmt.Errorf("Could not parse attributeURI %s - is not an absolute URI", attributeURI)
 	}
