@@ -30,4 +30,4 @@ jobs:
           allowUpdates: true
           omitBodyDuringUpdate: true
           generateReleaseNotes: true
-          token: ${{ secrets.YOUR_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
