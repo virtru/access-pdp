@@ -1,4 +1,4 @@
-module github.com/virtru/access-pdp/v2
+module github.com/virtru/access-pdp
 
 go 1.18
 
