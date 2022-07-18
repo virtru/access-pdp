@@ -31,7 +31,7 @@ For each entity identifer provided:
 ### Important design decisions/constraints for this library
 
 * **Design decision** -> Entity identifiers and "entity types" **only have meaning to the caller of the PDP**, not the PDP itself.
-* **Design decision** -> This PDP _may not_ make outbound requests or consult outside sources for decision inputs - it **must be provided everything necessary to make a decision** by its caller (Entity Attributes, Data Attributes, Attribute Definitions for the Data Attributes)
+* **Design decision** -> This PDP _may not_ make outbound requests or consult outside sources for decision inputs - it **must be provided everything necessary to make a decision** (Entity Attributes, Data Attributes, Attribute Definitions for the Data Attributes) by its caller, usually an Access **PEP**
 * **Design decision** -> The logic of this PDP must be **fixed, boolean and domain-agnostic** - deciding how to interpret and apply the decisions this Access PDP generates is the job of an Access **PEP**, which is typically domain-specific, and which would typically wrap this Access PDP.
 * **Design decision** -> This PDP must be embeddable into PEPs as in-process code (library/local gRPC) or out-of-process code (separate container/remote gRPC)
 
