@@ -26,7 +26,7 @@ type AttributeDefinition struct {
 }
 
 
-// Returns the canonical URI representation of this attribute definition:
+// Returns the canonical URI representation of this AttributeDefinition:
 //  <scheme>://<hostname>/attr/<name>
 func (attrdef AttributeDefinition) GetCanonicalName() string {
 	return fmt.Sprintf("%s/attr/%s",
@@ -35,7 +35,7 @@ func (attrdef AttributeDefinition) GetCanonicalName() string {
 	)
 }
 
-// Returns the authority of this attribute definition:
+// Returns the authority of this AttributeDefinition:
 //  <scheme>://<hostname>
 func (attrdef AttributeDefinition) GetAuthority() string {
 	return attrdef.Authority

@@ -29,7 +29,7 @@ type AttributeInstance struct {
 }
 
 // Implement the standard "stringify" interface
-// and return a string in the canonical attribute instance format of
+// and return a string in the canonical AttributeInstance format of
 //  <authority>/attr/<name>/value/<value>
 func (attr AttributeInstance) String() string {
 	return fmt.Sprintf("%s/attr/%s/value/%s",

@@ -37,6 +37,13 @@ For each entity identifer provided:
 * **Design decision** -> The logic of this PDP must be **fixed, boolean and domain-agnostic** - deciding how to interpret and apply the decisions this Access PDP generates is the job of an Access **PEP**, which is typically domain-specific, and which would typically wrap this Access PDP.
 * **Design decision** -> This PDP must be embeddable into PEPs as in-process code (library/local gRPC) or out-of-process code (separate container/remote gRPC)
 
+
+### Project structure
+
+- [access_pdp.go](./access_pdp.go): Actual PDP logic
+- [attributes](./attributes): A sub-package of `access-pdp` that models and defines Attribute structs (Definitions and Instances) for canonically representing and comparing ABAC attributes in URI form.
+
+
 ## Interface
 
-This library exposes gRPC endpoints, and so can be consumed by any code that understands the gRPC protocol. This library could be wrapped in a container and hosted out-of-process from an Access PEP, or it could be hosted in-process.
+This library exposes gRPC endpoints (TODO), and so can be consumed by any code that understands the gRPC protocol. This library could be wrapped in a container and hosted out-of-process from an Access PEP, or it could be hosted in-process.
