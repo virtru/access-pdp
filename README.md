@@ -1,6 +1,6 @@
 # ABAC Access Policy Decision Point
 
-[![Quality Gate](https://github.com/virtru/access-pdp/actions/workflows/ci.yaml/badge.svg)](https://github.com/virtru/access-pdp/actions/workflows/ci.yaml)
+[![CI Gate](https://github.com/virtru/access-pdp/actions/workflows/ci.yaml/badge.svg)](https://github.com/virtru/access-pdp/actions/workflows/ci.yaml)
 
 A reference implementation of an Attribute Based Access Control (ABAC) Access Policy Decision Point (PDP)
 
