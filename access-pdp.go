@@ -20,7 +20,7 @@ type accessPDP struct {
 	logger *zap.SugaredLogger
 }
 
-//A Decision represents the overall access decision for a specific entity,
+// A Decision represents the overall access decision for a specific entity,
 // - that is, the aggregate result of comparing entity AttributeInstances to every data AttributeInstance.
 type Decision struct {
 	//The important bit - does this entity Have Access or not, for this set of data attribute values
