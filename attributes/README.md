@@ -13,13 +13,9 @@ Assuming an example attribute in the following URI form: https://derp.com/attr/B
  - **Attribute Instance** = Attribute Namespace + Attribute Name + Attribute Specific value = `https://derp.com/attr/Blob/value/Green`
  - **Attribute Definition** = Metadata (rule type: allof/anyof/hierarchy, etc, allowed values) associated with a specific Attribute Canonical Name
  
- 
- 
 **Attribute Instances** are basically just **Attribute Definitions**, but taken with a specific **Attribute Value**.
  
 Every **Attribute Instance** necessarily has a corresponding **Attribute Definition**. Multiple **Attribute Instances** may share the same **Attribute Definition**.
-
-
 
 ## Example
 
@@ -37,3 +33,8 @@ then there would be 4 possible unique **Attribute Instances** for that single **
 1. These **Attribute Instances** all share the same Canonical Name
 1. These **Attribute Instances** all share the same **Attribute Definition**
 1. These **Attribute Instances** may be mapped to either data or entities in an ABAC system
+
+## Struct representations
+
+- [AttributeDefinition](./attributedefinition.go)
+- [AttributeInstance](./attributeinstance.go)
