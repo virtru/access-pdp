@@ -15,6 +15,7 @@ jobs:
           go-version: 1.18
       - uses: actions/checkout@v3
       - name: Bump version and push tag
+        id: tag-rel
         uses: anothrNick/github-tag-action@1.39.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -25,3 +26,10 @@ jobs:
           git pull
           export latest="$(git describe --tags `git rev-list --tags --max-count=1`)"
           curl https://proxy.golang.org/github.com/virtru/access-pdp/@v/$latest.info
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{steps.tag-rel.new_tag}}
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
