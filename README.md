@@ -41,7 +41,7 @@ For each entity identifer provided:
 
 ### Project structure
 
-- [access_pdp.go](./access_pdp.go): Actual PDP logic
+- [access-pdp.go](./access-pdp.go): Actual PDP logic
 - [attributes](./attributes): A sub-package of `access-pdp` that models and defines Attribute structs (Definitions and Instances) for canonically representing and comparing ABAC attributes in URI form.
 
 
