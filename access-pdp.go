@@ -72,7 +72,7 @@ type DataRuleResult struct {
 //There may be multiple "instances" (that is, AttributeInstances) of a single AttributeDefinition on both data and entities,
 //each with a different value.
 //
-//A ValueFailure does not necessarily mean the requirements for an AttributeDefinition where not or will not be met,
+//A ValueFailure does not necessarily mean the requirements for an AttributeDefinition were not or will not be met,
 //it is purely informational - there will be one value failure, per entity, per rule, per value the entity lacks -
 //it is up to the rule itself (anyof/allof/hierarchy) to translate this into an overall failure or not.
 type ValueFailure struct {
