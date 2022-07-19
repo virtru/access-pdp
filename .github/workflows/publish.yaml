@@ -28,7 +28,7 @@ jobs:
           curl https://proxy.golang.org/github.com/virtru/access-pdp/@v/$latest.info
       - uses: ncipollo/release-action@v1
         with:
-          tag: ${{steps.tag-rel.new_tag}}
+          tag: ${{ steps.tag-rel.outputs.new_tag }}
           allowUpdates: true
           omitBodyDuringUpdate: true
           generateReleaseNotes: true
