@@ -6,12 +6,6 @@ plugins:
  - name: go-grpc
    out: .
    opt: paths=source_relative
- # - name: struct-transformer
- #   out: .
- #   opt:
- #     - package=transform
- #     - goimports=true
-
  # - name: openapiv2
  #   out: .
  #   opt:
