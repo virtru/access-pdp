@@ -100,8 +100,25 @@ func PbToAttributeDefinitions(pbdefs []*pbAttr.AttributeDefinition) []attrs.Attr
 	return defs
 }
 
-func DecisionsToPb([]*pdp.Decision) {
+func DataRuleResultsToPb(results []*pdp.DataRuleResult) []*pbPDP.DataRuleResult {
+	var pbresults []*pbPDP.DataRuleResult
 
+
+	if results != nil {
+		for _, v := range results {
+			pbresults = append(pbresults, &pbPDP.DataRuleResult{Passed: v.Passed, RuleDefinition: v.RuleDefinition, ValueFailures: v.ValueFailures})
+		}
+	}
+
+	return instances
+}
+
+func DecisionToPbResponse(entity string, decision *pdp.Decision) pbPDP.DetermineAccessResponse {
+
+	return pbPDP.DetermineAccessResponse{
+		Entity: entity,
+		Access: decision.Access,
+	}
 }
 func (s *accessPDPServer) DetermineAccess(req *pbPDP.DetermineAccessRequest, stream pbPDP.AccessPDPEndpoint_DetermineAccessServer) error {
 
