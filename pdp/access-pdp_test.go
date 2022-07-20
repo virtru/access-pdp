@@ -1,4 +1,4 @@
-package accesspdp
+package pdp
 
 import (
 	ctx "context"

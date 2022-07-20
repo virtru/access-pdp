@@ -1,4 +1,4 @@
-package accesspdp_test
+package pdp_test
 
 import (
 	ctx "context"
@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/virtru/access-pdp"
+	accesspdp "github.com/virtru/access-pdp"
 	attrs "github.com/virtru/access-pdp/attributes"
 )
 

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package accesspdp.v1;
+option go_package = "github.com/virtru/access-pdp/proto/accesspdp/v1";
+
+import "attributes/v1/attributes.proto";
+
+service AccessPDPEndpoint {
+  rpc DetermineAccess(DetermineAccessRequest) returns (stream DetermineAccessResponse);
+}
+
+message DetermineAccessRequest {
+  repeated attributes.v1.AttributeInstance data_attributes = 1;
+  map<string, ListOfAttributeInstances> entity_attribute_sets = 2;
+  repeated attributes.v1.AttributeDefinition attribute_definitions = 3;
+}
+
+message ListOfAttributeInstances {
+  repeated attributes.v1.AttributeInstance attribute_instances = 1;
+}
+
+message DetermineAccessResponse {
+  optional bool access = 1;
+  repeated DataRuleResult results = 2;
+}
+
+message DataRuleResult {
+  optional bool passed = 1;
+  optional attributes.v1.AttributeDefinition rule_definition = 2;
+  repeated ValueFailure value_failures = 3;
+}
+
+message ValueFailure {
+  optional attributes.v1.AttributeInstance data_attribute = 1;
+  optional string message = 2;
+}
