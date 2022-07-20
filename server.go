@@ -6,11 +6,16 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	pb "github.com/virtru/access-pdp/proto/accesspdp/v1"
+	pbPDP "github.com/virtru/access-pdp/proto/accesspdp/v1"
+	pbAttr "github.com/virtru/access-pdp/proto/attributes/v1"
+
+
 	pdp "github.com/virtru/access-pdp/pdp"
+	attrs "github.com/virtru/access-pdp/attributes"
 
 
 	"github.com/virtru/oteltracer"
+	"go.opentelemetry.io/otel"
 	"github.com/caarlos0/env"
 	"go.uber.org/zap"
 )
@@ -18,6 +23,8 @@ import (
 var svcName = "access-pdp"
 
 var cfg EnvConfig
+
+var tracer = otel.Tracer("main")
 
 //Env config
 type EnvConfig struct {
@@ -37,9 +44,86 @@ type accessPDPServer struct {
 	// routeNotes map[string][]*pb.RouteNote
 }
 
-func (s *accessPDPServer) DetermineAccess(req *pb.DetermineAccessRequest, stream pb.AccessPDPEndpoint_DetermineAccessServer) error {
+func PbToAttributeInstances(pbinst []*pbAttr.AttributeInstance) []attrs.AttributeInstance {
+	var instances []attrs.AttributeInstance
 
-	s.accessPDP.DetermineAccess(req.DataAttributes, req.EntityAttributeSets, req.AttributeDefinitions)
+
+	if pbinst != nil {
+		for _, v := range pbinst {
+			instances = append(instances, attrs.AttributeInstance{Authority: v.Authority, Name: v.Name, Value: v.Value})
+		}
+	}
+
+	return instances
+}
+
+func PbToEntityAttrSets(pbsets map[string]*pbPDP.ListOfAttributeInstances) map[string][]attrs.AttributeInstance {
+	entitySets := make(map[string][]attrs.AttributeInstance)
+
+	if pbsets != nil {
+		for entity, instances := range pbsets {
+
+			var convAttrs []attrs.AttributeInstance
+			if instances != nil {
+				convAttrs = PbToAttributeInstances(instances.AttributeInstances)
+			}
+
+			entitySets[entity] = convAttrs
+		}
+	}
+	return entitySets
+}
+
+func PbToAttributeDefinitions(pbdefs []*pbAttr.AttributeDefinition) []attrs.AttributeDefinition {
+	var defs []attrs.AttributeDefinition
+
+
+	if pbdefs != nil {
+		for _, v := range pbdefs {
+			convAttr := attrs.AttributeDefinition{
+				Authority: v.Authority,
+				Name: v.Name,
+				Rule: v.Rule,
+				State: *v.State,
+				Order: v.Order,
+			}
+
+			//GroupBy is optional - if it is present, it is just represented as another AttributeInstance
+			if v.GroupBy != nil {
+				convAttr.GroupBy = &attrs.AttributeInstance{Authority: v.GroupBy.Authority, Name: v.GroupBy.Name, Value: v.GroupBy.Value}
+			}
+
+			defs = append(defs, convAttr)
+		}
+	}
+
+	return defs
+}
+
+func DecisionsToPb([]*pdp.Decision) {
+
+}
+func (s *accessPDPServer) DetermineAccess(req *pbPDP.DetermineAccessRequest, stream pbPDP.AccessPDPEndpoint_DetermineAccessServer) error {
+
+
+	dataAttrs := PbToAttributeInstances(req.DataAttributes)
+	entityAttrSets := PbToEntityAttrSets(req.EntityAttributeSets)
+	definitions := PbToAttributeDefinitions(req.AttributeDefinitions)
+
+	s.logger.Debug("DetermineAccess gRPC endpoint")
+	handlerCtx, handlerSpan := tracer.Start(stream.Context(), "DetermineAccess gRPC")
+	defer handlerSpan.End()
+
+	entityDecisions, err := s.accessPDP.DetermineAccess(dataAttrs, entityAttrSets, definitions, handlerCtx)
+	if err != nil {
+		return err
+	}
+
+	for entity, decisions := range entityDecisions {
+		DecisionsToPb(decisions)
+	}
+
+
 		// pdpCtx, pdpSpan := tracer.Start(handlerCtx, "DetermineAccess")
 		//1. Hit entitlements PDP first, to get entity attributes
 		//2. Then hit Attribute Authority, to get attribute definitions for all data attributes

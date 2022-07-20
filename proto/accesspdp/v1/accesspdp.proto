@@ -20,17 +20,18 @@ message ListOfAttributeInstances {
 }
 
 message DetermineAccessResponse {
-  optional bool access = 1;
-  repeated DataRuleResult results = 2;
+  string entity = 1;
+  bool access = 2;
+  repeated DataRuleResult results = 3;
 }
 
 message DataRuleResult {
-  optional bool passed = 1;
-  optional attributes.v1.AttributeDefinition rule_definition = 2;
+  bool passed = 1;
+  attributes.v1.AttributeDefinition rule_definition = 2;
   repeated ValueFailure value_failures = 3;
 }
 
 message ValueFailure {
-  optional attributes.v1.AttributeInstance data_attribute = 1;
-  optional string message = 2;
+  attributes.v1.AttributeInstance data_attribute = 1;
+  string message = 2;
 }
