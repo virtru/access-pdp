@@ -7,9 +7,16 @@ import (
 
 	pbPDP "github.com/virtru/access-pdp/proto/accesspdp/v1"
 	pbConv "github.com/virtru/access-pdp/protoconv"
-	"google.golang.org/grpc"
 
 	pdp "github.com/virtru/access-pdp/pdp"
+
+	//This allows clients to introspect the server
+	//and list operations - can be removed if that is not desired.
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/examples/data"
 
 	"github.com/caarlos0/env"
 	"github.com/virtru/oteltracer"
@@ -25,10 +32,13 @@ var tracer = otel.Tracer("main")
 
 //Env config
 type EnvConfig struct {
-	ListenPort     string `env:"LISTEN_PORT" envDefault:"50052"`
-	ListenHost     string `env:"LISTEN_HOST" envDefault:"localhost"`
-	Verbose        bool   `env:"VERBOSE" envDefault:"false"`
-	DisableTracing bool   `env:"DISABLE_TRACING" envDefault:"false"`
+	ListenPort      string `env:"LISTEN_PORT" envDefault:"50052"`
+	ListenHost      string `env:"LISTEN_HOST" envDefault:"localhost"`
+	Verbose         bool   `env:"VERBOSE" envDefault:"false"`
+	DisableTracing  bool   `env:"DISABLE_TRACING" envDefault:"false"`
+	EnableGRPCTLS   bool   `env:"ENABLE_GRPC_TLS" envDefault:"false"`
+	GRPCTLSCertFile string `env:"GRPC_TLS_CERTFILE" envDefault:"x509/server_cert.pem"`
+	GRPCTLSKeyFile  string `env:"GRPC_TLS_KEYFILE" envDefault:"x509/server_key.pem"`
 }
 
 type accessPDPServer struct {
@@ -112,9 +122,34 @@ func main() {
 	if err != nil {
 		logger.Fatalf("failed to listen: %v", err)
 	}
-	grpcServer := grpc.NewServer()
+
+	var opts []grpc.ServerOption
+	if cfg.EnableGRPCTLS {
+		logger.Debug("gRPC TLS mode enabled, checking for server TLS keys...")
+		var certFile, keyFile string
+		if cfg.GRPCTLSCertFile == "" {
+			certFile = data.Path(cfg.GRPCTLSCertFile)
+			logger.Debugf("Found server certfile at %s", cfg.GRPCTLSCertFile)
+		}
+		if cfg.GRPCTLSKeyFile == "" {
+			keyFile = data.Path(cfg.GRPCTLSKeyFile)
+			logger.Debugf("Found server keyfile at %s", cfg.GRPCTLSKeyFile)
+		}
+		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+		if err != nil {
+			logger.Fatalf("Failed to generate credentials %v", err)
+		}
+		logger.Info("Starting gRPC server with TLS")
+		opts = []grpc.ServerOption{grpc.Creds(creds)}
+	} else {
+		logger.Info("Starting gRPC server without TLS")
+	}
+
+	grpcServer := grpc.NewServer(opts...)
+	reflection.Register(grpcServer)
 	pbPDP.RegisterAccessPDPEndpointServer(grpcServer, newAccessPDPSrv(logger))
 
+	logger.Info("Serving gRPC endpoint")
 	if err := grpcServer.Serve(lis); err != nil {
 		logger.Fatal("Error on serve!", zap.Error(err))
 	}
