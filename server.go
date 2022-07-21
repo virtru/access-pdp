@@ -5,10 +5,10 @@ import (
 	"log"
 	"net"
 
-	pbPDP "github.com/virtru/access-pdp/proto/accesspdp/v1"
-	pbConv "github.com/virtru/access-pdp/protoconv"
+	pbPDP "github.com/virtru/access-pdp/v1/proto/accesspdp"
+	pbConv "github.com/virtru/access-pdp/v1/protoconv"
 
-	pdp "github.com/virtru/access-pdp/pdp"
+	pdp "github.com/virtru/access-pdp/v1/pdp"
 
 	//This allows clients to introspect the server
 	//and list operations - can be removed if that is not desired.

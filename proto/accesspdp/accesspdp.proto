@@ -1,22 +1,22 @@
 syntax = "proto3";
 
-package accesspdp.v1;
-option go_package = "github.com/virtru/access-pdp/proto/accesspdp/v1";
+package accesspdp;
+option go_package = "github.com/virtru/access-pdp/v1/proto/accesspdp";
 
-import "attributes/v1/attributes.proto";
+import "attributes/attributes.proto";
 
 service AccessPDPEndpoint {
   rpc DetermineAccess(DetermineAccessRequest) returns (stream DetermineAccessResponse);
 }
 
 message DetermineAccessRequest {
-  repeated attributes.v1.AttributeInstance data_attributes = 1;
+  repeated attributes.AttributeInstance data_attributes = 1;
   map<string, ListOfAttributeInstances> entity_attribute_sets = 2;
-  repeated attributes.v1.AttributeDefinition attribute_definitions = 3;
+  repeated attributes.AttributeDefinition attribute_definitions = 3;
 }
 
 message ListOfAttributeInstances {
-  repeated attributes.v1.AttributeInstance attribute_instances = 1;
+  repeated attributes.AttributeInstance attribute_instances = 1;
 }
 
 message DetermineAccessResponse {
@@ -27,11 +27,11 @@ message DetermineAccessResponse {
 
 message DataRuleResult {
   bool passed = 1;
-  attributes.v1.AttributeDefinition rule_definition = 2;
+  attributes.AttributeDefinition rule_definition = 2;
   repeated ValueFailure value_failures = 3;
 }
 
 message ValueFailure {
-  attributes.v1.AttributeInstance data_attribute = 1;
+  attributes.AttributeInstance data_attribute = 1;
   string message = 2;
 }

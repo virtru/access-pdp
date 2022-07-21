@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 
-	attrs "github.com/virtru/access-pdp/attributes"
+	attrs "github.com/virtru/access-pdp/v1/attributes"
 )
 
 //AnyOf tests
