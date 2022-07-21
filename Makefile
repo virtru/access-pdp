@@ -2,7 +2,7 @@ IMAGEVERSION?=$(shell git describe --tags --abbrev=0)
 IMAGETAG?=ghcr.io/virtru/access-pdp
 PLATFORMS?=linux/arm64,linux/amd64
 CGO_ENABLED=0
-COVERAGE_THRESH_PCT=81
+COVERAGE_THRESH_PCT=20
 
 .PHONY: localprep
 localprep: clean
