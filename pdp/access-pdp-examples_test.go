@@ -6,8 +6,8 @@ import (
 
 	"go.uber.org/zap"
 
-	accesspdp "github.com/virtru/access-pdp"
 	attrs "github.com/virtru/access-pdp/attributes"
+	accesspdp "github.com/virtru/access-pdp/pdp"
 )
 
 //AnyOf tests

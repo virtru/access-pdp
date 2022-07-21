@@ -25,7 +25,6 @@ type AttributeDefinition struct {
 	GroupBy *AttributeInstance `json:"group_by,omitempty"`
 }
 
-
 // Returns the canonical URI representation of this AttributeDefinition:
 //  <scheme>://<hostname>/attr/<name>
 func (attrdef AttributeDefinition) GetCanonicalName() string {
