@@ -37,7 +37,7 @@ type EnvConfig struct {
 type accessPDPServer struct {
 	logger *zap.SugaredLogger
 	accessPDP *pdp.AccessPDP
-	pb.UnimplementedAccessPDPEndpointServer
+	pbPDP.UnimplementedAccessPDPEndpointServer
 	// savedFeatures []*pb.Feature // read-only after initialized
 
 	// mu         sync.Mutex // protects routeNotes
@@ -74,50 +74,101 @@ func PbToEntityAttrSets(pbsets map[string]*pbPDP.ListOfAttributeInstances) map[s
 	return entitySets
 }
 
-func PbToAttributeDefinitions(pbdefs []*pbAttr.AttributeDefinition) []attrs.AttributeDefinition {
-	var defs []attrs.AttributeDefinition
-
-
-	if pbdefs != nil {
-		for _, v := range pbdefs {
+func PbToAttributeDefinition(pbdef *pbAttr.AttributeDefinition) attrs.AttributeDefinition {
+	var def attrs.AttributeDefinition
+	if pbdef != nil {
 			convAttr := attrs.AttributeDefinition{
-				Authority: v.Authority,
-				Name: v.Name,
-				Rule: v.Rule,
-				State: *v.State,
-				Order: v.Order,
+				Authority: pbdef.Authority,
+				Name: pbdef.Name,
+				Rule: pbdef.Rule,
+				State: *pbdef.State,
+				Order: pbdef.Order,
 			}
 
 			//GroupBy is optional - if it is present, it is just represented as another AttributeInstance
-			if v.GroupBy != nil {
-				convAttr.GroupBy = &attrs.AttributeInstance{Authority: v.GroupBy.Authority, Name: v.GroupBy.Name, Value: v.GroupBy.Value}
+			if pbdef.GroupBy != nil {
+				convAttr.GroupBy = &attrs.AttributeInstance{Authority: pbdef.GroupBy.Authority, Name: pbdef.GroupBy.Name, Value: pbdef.GroupBy.Value}
 			}
 
-			defs = append(defs, convAttr)
+			def = convAttr
+		}
+	return def
+}
+
+func PbToAttributeDefinitions(pbdefs []*pbAttr.AttributeDefinition) []attrs.AttributeDefinition {
+	var defs []attrs.AttributeDefinition
+
+	if pbdefs != nil {
+		for _, v := range pbdefs {
+			defs = append(defs, PbToAttributeDefinition(v))
 		}
 	}
 
 	return defs
 }
 
-func DataRuleResultsToPb(results []*pdp.DataRuleResult) []*pbPDP.DataRuleResult {
+func AttributeDefinitionToPb(def *attrs.AttributeDefinition) *pbAttr.AttributeDefinition {
+	pbDef := pbAttr.AttributeDefinition{
+		Authority: def.Authority,
+		Name: def.Name,
+		Rule: def.Rule,
+		State: &def.State,
+		Order: def.Order,
+	}
+
+	//GroupBy is optional - if it is present, it is just represented as another AttributeInstance
+	if def.GroupBy != nil {
+		pbDef.GroupBy = &pbAttr.AttributeInstance{Authority: def.GroupBy.Authority, Name: def.GroupBy.Name, Value: def.GroupBy.Value}
+	}
+
+	return &pbDef
+}
+
+func AttributeInstanceToPb(def *attrs.AttributeInstance) *pbAttr.AttributeInstance {
+	pbInst := pbAttr.AttributeInstance {
+		Authority: def.Authority,
+		Name: def.Name,
+		Value: def.Value,
+	}
+
+	return &pbInst
+}
+
+func ValueFailureToPb(failure *pdp.ValueFailure) *pbPDP.ValueFailure {
+	pbFail := pbPDP.ValueFailure {
+		DataAttribute: AttributeInstanceToPb(failure.DataAttribute),
+		Message: failure.Message,
+	}
+
+	return &pbFail
+}
+
+func DataRuleResultsToPb(results []pdp.DataRuleResult) []*pbPDP.DataRuleResult {
 	var pbresults []*pbPDP.DataRuleResult
 
 
 	if results != nil {
 		for _, v := range results {
-			pbresults = append(pbresults, &pbPDP.DataRuleResult{Passed: v.Passed, RuleDefinition: v.RuleDefinition, ValueFailures: v.ValueFailures})
+			var convFails []*pbPDP.ValueFailure
+			for _, fail := range v.ValueFailures {
+				convFails = append(convFails, ValueFailureToPb(&fail))
+			}
+			pbresults = append(pbresults, &pbPDP.DataRuleResult{Passed: v.Passed, RuleDefinition: AttributeDefinitionToPb(v.RuleDefinition), ValueFailures: convFails})
 		}
 	}
 
-	return instances
+	return pbresults
 }
 
-func DecisionToPbResponse(entity string, decision *pdp.Decision) pbPDP.DetermineAccessResponse {
+func DecisionToPbResponse(entity string, decision *pdp.Decision) *pbPDP.DetermineAccessResponse {
 
-	return pbPDP.DetermineAccessResponse{
+
+	pbResults := DataRuleResultsToPb(decision.Results)
+
+	return &pbPDP.DetermineAccessResponse{
 		Entity: entity,
 		Access: decision.Access,
+		Results: pbResults,
 	}
 }
 func (s *accessPDPServer) DetermineAccess(req *pbPDP.DetermineAccessRequest, stream pbPDP.AccessPDPEndpoint_DetermineAccessServer) error {
@@ -137,7 +188,8 @@ func (s *accessPDPServer) DetermineAccess(req *pbPDP.DetermineAccessRequest, str
 	}
 
 	for entity, decisions := range entityDecisions {
-		DecisionsToPb(decisions)
+		entityDecision := DecisionToPbResponse(entity, decisions)
+		stream.Send(entityDecision)
 	}
 
 
@@ -223,6 +275,6 @@ func main() {
 		logger.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterAccessPDPEndpointServer(grpcServer, newAccessPDPSrv(logger))
+	pbPDP.RegisterAccessPDPEndpointServer(grpcServer, newAccessPDPSrv(logger))
 	grpcServer.Serve(lis)
 }
