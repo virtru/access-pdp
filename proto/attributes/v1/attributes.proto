@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package attributes.v1;
-option go_package = "github.com/virtru/access-pdp/v1/proto/attributes/v1";
+option go_package = "github.com/virtru/access-pdp/proto/attributes/v1";
 
 // AttributeInstance is created by selecting the Authority, Name and a specific Value from
 // an AttributeDefinition.

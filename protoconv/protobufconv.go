@@ -1,11 +1,11 @@
 package protoconv
 
 import (
-	pbPDP "github.com/virtru/access-pdp/v1/proto/accesspdp/v1"
-	pbAttr "github.com/virtru/access-pdp/v1/proto/attributes/v1"
+	pbPDP "github.com/virtru/access-pdp/proto/accesspdp/v1"
+	pbAttr "github.com/virtru/access-pdp/proto/attributes/v1"
 
-	attrs "github.com/virtru/access-pdp/v1/attributes"
-	pdp "github.com/virtru/access-pdp/v1/pdp"
+	attrs "github.com/virtru/access-pdp/attributes"
+	pdp "github.com/virtru/access-pdp/pdp"
 )
 
 //Since codegen'd protobuf Go structs are (annoyingly, and unfixably, though arguably architecturally reasonably) not

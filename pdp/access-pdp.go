@@ -7,8 +7,8 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.uber.org/zap"
 
-	attrs "github.com/virtru/access-pdp/v1/attributes"
-	// pb "github.com/virtru/access-pdp/v1/proto/accesspdp/v1"
+	attrs "github.com/virtru/access-pdp/attributes"
+	// pb "github.com/virtru/access-pdp/proto/accesspdp/v1"
 )
 
 var tracer = otel.Tracer("accesspdp")

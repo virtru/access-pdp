@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package accesspdp.v1;
-option go_package = "github.com/virtru/access-pdp/v1/proto/accesspdp/v1";
+option go_package = "github.com/virtru/access-pdp/proto/accesspdp/v1";
 
 import "attributes/v1/attributes.proto";
 
