@@ -1,7 +1,7 @@
 FROM golang:1.18-alpine AS builder
 
 ARG GOLANGCI_VERSION=v1.47.2
-ARG COVERAGE_THRESH_PCT=20
+ARG COVERAGE_THRESH_PCT=81
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0
@@ -47,10 +47,10 @@ RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master
 RUN ./golangci-lint --version && ./golangci-lint run --timeout 20m
 
 # Run tests
-RUN go test --coverprofile cover.out ./...
+RUN go test --coverprofile cover.out ./attributes ./pdp
 
 # Test coverage
-RUN overcover --coverprofile cover.out ./... --threshold ${COVERAGE_THRESH_PCT}
+RUN overcover --coverprofile cover.out ./attributes ./pdp --threshold ${COVERAGE_THRESH_PCT}
 
 # Build the application
 RUN go build -o /dist/access-pdp-grpc-server

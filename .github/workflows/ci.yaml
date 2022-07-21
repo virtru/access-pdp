@@ -21,6 +21,6 @@ jobs:
       - name: Setup unit test
         run: go install github.com/klmitch/overcover@v1.2.1
       - name: Run unit test with coverage
-        run: go test --coverprofile cover.out ./...
+        run: go test --coverprofile cover.out ./pdp ./attributes
       - name: Check coverage meets threshold
-        run: overcover --coverprofile cover.out ./... --threshold ${{ env.COVERAGE_THRESH_PCT }}
+        run: overcover --coverprofile cover.out ./pdp ./attributes --threshold ${{ env.COVERAGE_THRESH_PCT }}
