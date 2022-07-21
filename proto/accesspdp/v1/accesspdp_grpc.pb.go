@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: accesspdp/accesspdp.proto
+// source: accesspdp/v1/accesspdp.proto
 
-package accesspdp
+package v1
 
 import (
 	context "context"
@@ -34,7 +34,7 @@ func NewAccessPDPEndpointClient(cc grpc.ClientConnInterface) AccessPDPEndpointCl
 }
 
 func (c *accessPDPEndpointClient) DetermineAccess(ctx context.Context, in *DetermineAccessRequest, opts ...grpc.CallOption) (AccessPDPEndpoint_DetermineAccessClient, error) {
-	stream, err := c.cc.NewStream(ctx, &AccessPDPEndpoint_ServiceDesc.Streams[0], "/accesspdp.AccessPDPEndpoint/DetermineAccess", opts...)
+	stream, err := c.cc.NewStream(ctx, &AccessPDPEndpoint_ServiceDesc.Streams[0], "/accesspdp.v1.AccessPDPEndpoint/DetermineAccess", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func (x *accessPDPEndpointDetermineAccessServer) Send(m *DetermineAccessResponse
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AccessPDPEndpoint_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "accesspdp.AccessPDPEndpoint",
+	ServiceName: "accesspdp.v1.AccessPDPEndpoint",
 	HandlerType: (*AccessPDPEndpointServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
@@ -128,5 +128,5 @@ var AccessPDPEndpoint_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "accesspdp/accesspdp.proto",
+	Metadata: "accesspdp/v1/accesspdp.proto",
 }

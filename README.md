@@ -41,8 +41,10 @@ For each entity identifer provided:
 
 ### Project structure
 
-- [access-pdp.go](./access-pdp.go): Actual PDP logic
-- [attributes](./attributes): A sub-package of `access-pdp` that models and defines Attribute structs (Definitions and Instances) for canonically representing and comparing ABAC attributes in URI form.
+- [pdp](./pdp): Actual PDP, importable directly into your Go code as a Go library via `import "github.com/virtru/access-pdp/v1/pdp"`
+- [attributes](./attributes): Models and helper functions for canonically representing and comparing ABAC attributes in URI form as AttributeInstances and AttributeDefinitions (`import "github.com/virtru/access-pdp/v1/attributes"`)
+- [server.go](./server.go): A simple gRPC server for exposing the [pdp](./pdp) as a gRPC endpoint - useful as an alternative if it is not possible to directly import the PDP as a Go library.
+- [proto](./proto): The gRPC protobuf definitions for the gRPC server/endpoints
 
 
 ## Interface

@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 
-	pbPDP "github.com/virtru/access-pdp/v1/proto/accesspdp"
+	pbPDP "github.com/virtru/access-pdp/v1/proto/accesspdp/v1"
 	pbConv "github.com/virtru/access-pdp/v1/protoconv"
 
 	pdp "github.com/virtru/access-pdp/v1/pdp"

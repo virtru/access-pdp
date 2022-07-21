@@ -12,6 +12,7 @@ RUN apk add --no-cache git=~2 wget=~1
 # Get test coverage tool and protobuf codegen
 RUN go install github.com/klmitch/overcover@v1.2.1 \
     && go install github.com/bufbuild/buf/cmd/buf@v1.6.0 \
+    && go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28 \
     && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 
 WORKDIR /build

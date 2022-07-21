@@ -1,8 +1,8 @@
 package protoconv
 
 import (
-	pbPDP "github.com/virtru/access-pdp/v1/proto/accesspdp"
-	pbAttr "github.com/virtru/access-pdp/v1/proto/attributes"
+	pbPDP "github.com/virtru/access-pdp/v1/proto/accesspdp/v1"
+	pbAttr "github.com/virtru/access-pdp/v1/proto/attributes/v1"
 
 	attrs "github.com/virtru/access-pdp/v1/attributes"
 	pdp "github.com/virtru/access-pdp/v1/pdp"

@@ -12,6 +12,10 @@ localprep: clean
 	@golangci-lint version
 	@echo "Making sure overcover is installed"
 	@go install github.com/klmitch/overcover@latest
+	@echo "Making sure protobuf generators/helpers are installed"
+	@go install github.com/bufbuild/buf/cmd/buf@v1.6.0
+	@go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	@echo "Vendoring modules"
 	@go mod vendor
 
