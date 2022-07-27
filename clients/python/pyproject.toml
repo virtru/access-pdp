@@ -13,8 +13,8 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  'grpcio ~= 1',
-  'protobuf ~= 4',
+  'grpcio',
+  'protobuf',
 ]
 
 [build-system]
