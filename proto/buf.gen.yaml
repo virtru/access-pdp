@@ -9,9 +9,9 @@ plugins:
 # Python codegen
 # Stolen from https://github.com/bufbuild/buf/issues/223#issuecomment-969353587
  - remote: buf.build/protocolbuffers/plugins/python:v3.19.1-1
-   out: ../clients/accesspdp-client-python/src
+   out: ../clients/accesspdp_client_python/src
  - remote: buf.build/grpc/plugins/python:v1.41.1-1
-   out: ../clients/accesspdp-client-python/src
+   out: ../clients/accesspdp_client_python/src
  # - name: openapiv2
  #   out: .
  #   opt:

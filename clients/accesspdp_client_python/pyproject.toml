@@ -1,5 +1,5 @@
 [project]
-name = "accesspdp-client-python"
+name = "accesspdp_client_python"
 version = "0.0.1"
 authors = [
   { name="Virtru", email="support@virtru.com" },
