@@ -6,6 +6,12 @@ plugins:
  - name: go-grpc
    out: .
    opt: paths=source_relative
+# Python codegen
+# Stolen from https://github.com/bufbuild/buf/issues/223#issuecomment-969353587
+ - remote: buf.build/protocolbuffers/plugins/python:v3.19.1-1
+   out: ../grpc-clients/python
+ - remote: buf.build/grpc/plugins/python:v1.41.1-1
+   out: ../grpc-clients/python
  # - name: openapiv2
  #   out: .
  #   opt:
