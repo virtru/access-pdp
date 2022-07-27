@@ -28,8 +28,8 @@ clean:
 .PHONY: docker-buildx-armsetup
 docker-buildx-armsetup:
     # Try to create builder context, ignoring failure if one already exists
-	docker buildx create --name access-pep-cross || true
-	docker buildx use access-pep-cross
+	docker buildx create --name access-pdp-cross || true
+	docker buildx use access-pdp-cross
 	docker buildx inspect --bootstrap
 
 .PHONY: dockerbuild
