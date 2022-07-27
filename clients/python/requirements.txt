@@ -1,0 +1,4 @@
+-i https://pypi.org/simple
+grpcio==1.47.0
+protobuf==4.21.4
+six==1.16.0
