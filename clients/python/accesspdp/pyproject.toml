@@ -5,17 +5,20 @@ authors = [
   { name="Virtru", email="support@virtru.com" },
 ]
 description = "A Python gRPC client for Virtru's Access PDP"
-readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: BSD 3 Clause",
     "Operating System :: OS Independent",
 ]
+
+[tool.poetry.dependencies]
+attributes = { git = "https://github.com/virtru/access-pdp", branch = "grpc", subdirectory= "clients/python/attributes"}
+
 dependencies = [
   'grpcio',
   'protobuf',
-  'attributes @ git+https://github.com/virtru/access-pdp@grpc#egg=attributes&subdirectory=clients/python/attributes',
+  'attributes',
 ]
 
 [build-system]
