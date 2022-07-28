@@ -1,6 +1,8 @@
 package protoconv
 
 import (
+	"fmt"
+
 	pbPDP "github.com/virtru/access-pdp/proto/accesspdp/v1"
 	pbAttr "github.com/virtru/access-pdp/proto/attributes/v1"
 
@@ -33,6 +35,7 @@ func AttributeInstanceToPb(def *attrs.AttributeInstance) *pbAttr.AttributeInstan
 }
 
 func PbToAttributeDefinition(pbdef *pbAttr.AttributeDefinition) *attrs.AttributeDefinition {
+	fmt.Printf("DERP")
 	var def *attrs.AttributeDefinition
 	if pbdef != nil {
 		convAttr := &attrs.AttributeDefinition{
