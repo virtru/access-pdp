@@ -15,12 +15,11 @@ classifiers = [
 dependencies = [
   'grpcio',
   'protobuf',
-  'attributes',
+  # this package also depends on sister project `attributes`, but you can't
+  # reference a git repo as a direct dependency here (even though other Python tools can and PEP 508 supports it)
+  # thanks to this bug: https://github.com/pypa/pip/issues/10216
 ]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.poetry.dependencies]
-attributes = { git = "https://github.com/virtru/access-pdp", branch = "grpc", subdirectory= "clients/python/attributes"}
