@@ -1,0 +1,23 @@
+[project]
+name = "accesspdp"
+version = "0.0.1"
+authors = [
+  { name="Virtru", email="support@virtru.com" },
+]
+description = "A Python gRPC client for Virtru's Access PDP"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD 3 Clause",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  'grpcio',
+  'protobuf',
+  'git+https://github.com/virtru/access-pdp@grpc#egg=attributes&subdirectory=clients/python/attributes',
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
