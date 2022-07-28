@@ -15,7 +15,7 @@ classifiers = [
 dependencies = [
   'grpcio',
   'protobuf',
-  'git+https://github.com/virtru/access-pdp@grpc#egg=attributes&subdirectory=clients/python/attributes',
+  'attributes @ git+https://github.com/virtru/access-pdp@grpc#egg=attributes&subdirectory=clients/python/attributes',
 ]
 
 [build-system]
