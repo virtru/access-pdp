@@ -12,13 +12,13 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-[tool.poetry.dependencies]
-attributes = { git = "https://github.com/virtru/access-pdp", branch = "grpc", subdirectory= "clients/python/attributes"}
+# [tool.poetry.dependencies]
+# attributes = { git = "https://github.com/virtru/access-pdp", branch = "grpc", subdirectory= "clients/python/attributes"}
 
 dependencies = [
   'grpcio',
   'protobuf',
-  'attributes',
+  # 'attributes',
 ]
 
 [build-system]
