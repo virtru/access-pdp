@@ -39,8 +39,11 @@ func PbToAttributeDefinition(pbdef *pbAttr.AttributeDefinition) *attrs.Attribute
 			Authority: pbdef.Authority,
 			Name:      pbdef.Name,
 			Rule:      pbdef.Rule,
-			State:     *pbdef.State,
 			Order:     pbdef.Order,
+		}
+
+		if pbdef.State != nil {
+			convAttr.State = *pbdef.State
 		}
 
 		//GroupBy is optional - if it is present, it is just represented as another AttributeInstance
