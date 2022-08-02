@@ -12,6 +12,24 @@ A reference [(NIST SP 800-162)](https://csrc.nist.gov/publications/detail/sp/800
 - A Access PDP (Policy Decision Point) is a library or service that *makes Access decisions*. It is usually "wrapped" or used by an Access Policy Enforcement Point (PEP), which *enforces* whatever decision this Access PDP makes.
 - This library is not an Access **PEP** - it is a domain-agnostic Access **PDP**, which domain-specific Access **PEP**s may consume. 
 
+## Usage (As a Go library)
+
+### Fetch/build (optional, can also simply add imports and `go mod tidy` which will implicitly `go get`)
+``` sh
+go get github.com/virtru/access-pdp
+```
+
+
+### Import and use:
+``` go
+import (
+  "github.com/virtru/access-pdp/pdp"
+  "github.com/virtru/access-pdp/attributes"
+)
+```
+
+See [./pdp/access-pdp-examples_test.go](./pdp/access-pdp-examples_test.go) for a complete example.
+
 ## Details
 In this implementation, the Access PDP:
 
