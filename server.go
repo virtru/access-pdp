@@ -1,10 +1,10 @@
 package main
 
 import (
+	ctx "context"
 	"fmt"
 	"log"
 	"net"
-	ctx "context"
 
 	pbPDP "github.com/virtru/access-pdp/proto/accesspdp/v1"
 	pbConv "github.com/virtru/access-pdp/protoconv"
@@ -49,8 +49,8 @@ type accessPDPServer struct {
 	pbPDP.UnimplementedHealthServer
 }
 
-
 func (s *accessPDPServer) Check(parentCtx ctx.Context, req *pbPDP.HealthCheckRequest) (*pbPDP.HealthCheckResponse, error) {
+	s.logger.Debug("Health check endpoint hit")
 	return &pbPDP.HealthCheckResponse{
 		Status: 1,
 	}, nil
@@ -156,7 +156,10 @@ func main() {
 
 	grpcServer := grpc.NewServer(opts...)
 	reflection.Register(grpcServer)
-	pbPDP.RegisterAccessPDPEndpointServer(grpcServer, newAccessPDPSrv(logger))
+
+	srv := newAccessPDPSrv(logger)
+	pbPDP.RegisterAccessPDPEndpointServer(grpcServer, srv)
+	pbPDP.RegisterHealthServer(grpcServer, srv)
 
 	logger.Info("Serving gRPC endpoint")
 	if err := grpcServer.Serve(lis); err != nil {
