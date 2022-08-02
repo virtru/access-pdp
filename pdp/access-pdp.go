@@ -1,4 +1,4 @@
-package accesspdp
+package pdp
 
 import (
 	ctx "context"
@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	attrs "github.com/virtru/access-pdp/attributes"
+	// pb "github.com/virtru/access-pdp/proto/accesspdp/v1"
 )
 
 var tracer = otel.Tracer("accesspdp")
@@ -16,7 +17,7 @@ const ALL_OF string = "allOf"
 const ANY_OF string = "anyOf"
 const HIERARCHY string = "hierarchy"
 
-type accessPDP struct {
+type AccessPDP struct {
 	logger *zap.SugaredLogger
 }
 
@@ -83,14 +84,14 @@ type ValueFailure struct {
 }
 
 // NewAccessPDP uses https://github.com/uber-go/zap for structured logging
-func NewAccessPDP(logger *zap.SugaredLogger) *accessPDP {
-	return &accessPDP{logger}
+func NewAccessPDP(logger *zap.SugaredLogger) *AccessPDP {
+	return &AccessPDP{logger}
 }
 
 // DetermineAccess will take data AttributeInstances, data AttributeDefinitions, and entity AttributeInstance sets, and
 // compare every data AttributeInstance against every entity's AttributeInstance set, generating a rolled-up decision
 // result for each entity, as well as a detailed breakdown of every data AttributeInstance comparison.
-func (pdp *accessPDP) DetermineAccess(dataAttributes []attrs.AttributeInstance, entityAttributeSets map[string][]attrs.AttributeInstance, attributeDefinitions []attrs.AttributeDefinition, parentCtx ctx.Context) (map[string]*Decision, error) {
+func (pdp *AccessPDP) DetermineAccess(dataAttributes []attrs.AttributeInstance, entityAttributeSets map[string][]attrs.AttributeInstance, attributeDefinitions []attrs.AttributeDefinition, parentCtx ctx.Context) (map[string]*Decision, error) {
 	pdp.logger.Debug("DetermineAccess")
 	determineCtx, evalSpan := tracer.Start(parentCtx, "DetermineAccess")
 	defer evalSpan.End()
@@ -198,7 +199,7 @@ func (pdp *accessPDP) DetermineAccess(dataAttributes []attrs.AttributeInstance, 
 // - a set of data AttributeInstances with the same canonical name
 // - a map of entity AttributeInstances keyed by entity ID
 //Returns a map of DataRuleResults keyed by EntityID
-func (pdp *accessPDP) allOfRule(dataAttrsBySingleCanonicalName []attrs.AttributeInstance, entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance) map[string]DataRuleResult {
+func (pdp *AccessPDP) allOfRule(dataAttrsBySingleCanonicalName []attrs.AttributeInstance, entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance) map[string]DataRuleResult {
 	ruleResultsByEntity := make(map[string]DataRuleResult)
 
 	//All of the data AttributeInstances in the arg have the same canonical name.
@@ -255,7 +256,7 @@ func (pdp *accessPDP) allOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 // - a set of data AttributeInstances with the same canonical name
 // - a map of entity AttributeInstances keyed by entity ID
 //Returns a map of DataRuleResults keyed by EntityID
-func (pdp *accessPDP) anyOfRule(dataAttrsBySingleCanonicalName []attrs.AttributeInstance, entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance) map[string]DataRuleResult {
+func (pdp *AccessPDP) anyOfRule(dataAttrsBySingleCanonicalName []attrs.AttributeInstance, entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance) map[string]DataRuleResult {
 	ruleResultsByEntity := make(map[string]DataRuleResult)
 
 	dvCanonicalName := dataAttrsBySingleCanonicalName[0].GetCanonicalName()
@@ -320,7 +321,7 @@ func (pdp *accessPDP) anyOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 //
 //If multiple entity AttributeInstances (that is, values) for a hierarchy AttributeDefinition are present for the same canonical name, the lowest will be chosen,
 //and the others ignored.
-func (pdp *accessPDP) hierarchyRule(dataAttrsBySingleCanonicalName []attrs.AttributeInstance, entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance, order []string) map[string]DataRuleResult {
+func (pdp *AccessPDP) hierarchyRule(dataAttrsBySingleCanonicalName []attrs.AttributeInstance, entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance, order []string) map[string]DataRuleResult {
 	ruleResultsByEntity := make(map[string]DataRuleResult)
 
 	highestDataInstance := pdp.getHighestRankedInstanceFromDataAttributes(order, dataAttrsBySingleCanonicalName)
@@ -371,7 +372,7 @@ func (pdp *accessPDP) hierarchyRule(dataAttrsBySingleCanonicalName []attrs.Attri
 //entities should not be included. This function will check every entity's AttributeInstances, and filter out the entities
 //that lack the the GroupBy AttributeInstance, returning a new, reduced set of entities that all have the
 //GroupBy AttributeInstance.
-func (pdp *accessPDP) groupByFilterEntityAttributeInstances(entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance) map[string][]attrs.AttributeInstance {
+func (pdp *AccessPDP) groupByFilterEntityAttributeInstances(entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance) map[string][]attrs.AttributeInstance {
 	pdp.logger.Debugf("Filtering out entities by groupby attribute %s", groupBy)
 
 	filteredEntitySet := make(map[string][]attrs.AttributeInstance)
@@ -397,7 +398,7 @@ func (pdp *accessPDP) groupByFilterEntityAttributeInstances(entityAttributes map
 //Since by definition hierarchy comparisons have to be one-data-value-to-many-entity-values, this won't work.
 //So, in a scenario where there are multiple data values to choose from, grab the "highest" ranked value
 //present in the set of data AttributeInstances, and use that as the point of comparison, ignoring the "lower-ranked" data values.
-func (pdp *accessPDP) getHighestRankedInstanceFromDataAttributes(order []string, dataAttributeCluster []attrs.AttributeInstance) *attrs.AttributeInstance {
+func (pdp *AccessPDP) getHighestRankedInstanceFromDataAttributes(order []string, dataAttributeCluster []attrs.AttributeInstance) *attrs.AttributeInstance {
 	//For hierarchy, convention is 0 == most privileged, 1 == less privileged, etc
 	//So initialize with the LEAST privileged rank in the defined order
 	var highestDVIndex int = (len(order) - 1)

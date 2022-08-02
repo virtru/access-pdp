@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package attributes.v1;
+option go_package = "github.com/virtru/access-pdp/proto/attributes/v1";
+
+// AttributeInstance is created by selecting the Authority, Name and a specific Value from
+// an AttributeDefinition.
+//
+// An AttributeInstance is a single, unique attribute, with a single value.
+//
+// Applied to an entity, the AttributeInstance becomes an entity attribute.
+// Applied to data, the AttributeInstance becomes a data attribute.
+//
+// When making an access decisions, these two kinds of AttributeInstances are compared with each other.
+//
+// Example AttributeInstance:
+// https://derp.com/attr/Blob/value/Green ->
+//  Authority = https://derp.com
+//  Name = Blob
+//  CanonicalName = Authority + Name https://derp.com/attr/Blob
+//  Value = Green
+message AttributeInstance {
+    string authority = 1;
+    string name = 2;
+    string value = 3;
+}
+
+// AttributeDefinition describes metadata about the attribute -
+// it's name, it's authority, it's rule, it's valid values, etc.
+//
+// Instances, not Definitions, are compared for access decisions.
+//
+// An AttributeDefinition is not "an attribute" and cannot be used for access decisions,
+// it simply described how a given AttributeInstance should be compared.
+//
+// Every Instance has a parent Definition, but not every Definition has an Instance.
+message AttributeDefinition {
+    string authority = 1;
+    string name = 2;
+    string rule = 3;
+    optional string state = 4;
+    optional AttributeInstance group_by = 5;
+	//'order' contains all the valid values an Instance of this Definition may
+	//have. If the `rule` is == hierarchy, then the ordering of these values implies
+	//their hierarchical position.
+    repeated string order = 6;
+}
