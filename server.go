@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	ctx "context"
 
 	pbPDP "github.com/virtru/access-pdp/proto/accesspdp/v1"
 	pbConv "github.com/virtru/access-pdp/protoconv"
@@ -45,6 +46,14 @@ type accessPDPServer struct {
 	logger    *zap.SugaredLogger
 	accessPDP *pdp.AccessPDP
 	pbPDP.UnimplementedAccessPDPEndpointServer
+	pbPDP.UnimplementedHealthServer
+}
+
+
+func (s *accessPDPServer) Check(parentCtx ctx.Context, req *pbPDP.HealthCheckRequest) (*pbPDP.HealthCheckResponse, error) {
+	return &pbPDP.HealthCheckResponse{
+		Status: 1,
+	}, nil
 }
 
 func (s *accessPDPServer) DetermineAccess(req *pbPDP.DetermineAccessRequest, stream pbPDP.AccessPDPEndpoint_DetermineAccessServer) error {

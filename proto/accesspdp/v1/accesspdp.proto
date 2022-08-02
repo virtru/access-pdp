@@ -5,6 +5,10 @@ option go_package = "github.com/virtru/access-pdp/proto/accesspdp/v1";
 
 import "attributes/v1/attributes.proto";
 
+service Health {
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
 service AccessPDPEndpoint {
   rpc DetermineAccess(DetermineAccessRequest) returns (stream DetermineAccessResponse);
 }
@@ -34,4 +38,18 @@ message DataRuleResult {
 message ValueFailure {
   attributes.v1.AttributeInstance data_attribute = 1;
   string message = 2;
+}
+
+message HealthCheckRequest {
+  string service = 1;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;  // Used only by the Watch method.
+  }
+  ServingStatus status = 1;
 }
