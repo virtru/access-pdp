@@ -14,7 +14,7 @@ A reference [(NIST SP 800-162)](https://csrc.nist.gov/publications/detail/sp/800
 
 ## Usage (As a Go library, recommended)
 
-### Fetch/build (optional, can also simply add imports and `go mod tidy` which will implicitly `go get`)
+### Fetch/build
 ``` sh
 go get github.com/virtru/access-pdp
 ```
@@ -30,7 +30,7 @@ import (
 
 See [./pdp/access-pdp-examples_test.go](./pdp/access-pdp-examples_test.go) for a complete example.
 
-## Usage (As a gRPC server)
+## Usage (As a gRPC server, for non-Go/remote endpoint usage)
 
 ### Fetch/build (optional, can also simply add imports and `go mod tidy` which will implicitly `go get`)
 ``` sh
@@ -51,6 +51,7 @@ GOBIN=/my-bin-dir go install github.com/virtru/access-pdp
   - `make protogen-go` to (re)generate Go client and server code
   - `make protogen-python` to (re)generate Python client and server code
   - Currently only the gRPC Go server code is directly used by this repo, the others are there as an example.
+  - Currently we use [Buf CLI](https://buf.build/product/cli/) to lint/build/codegen from our gRPC protobuf definitions - the Buf config may be extended to generate gRPC clients and servers for any supported language. 
 
 ## Design Details
 In this implementation, the Access PDP:
