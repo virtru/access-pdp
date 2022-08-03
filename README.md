@@ -28,7 +28,7 @@ import (
 )
 ```
 
-See [./pdp/access-pdp-examples_test.go](./pdp/access-pdp-examples_test.go) for a complete example.
+See [./pdp/access-pdp-examples_test.go](./pdp/access-pdp-examples_test.go) for a complete example, and [Godocs here](https://pkg.go.dev/github.com/virtru/access-pdp) 
 
 ## Usage (As a gRPC server, for non-Go/remote endpoint usage)
 
