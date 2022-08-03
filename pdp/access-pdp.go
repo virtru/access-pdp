@@ -203,7 +203,7 @@ func (pdp *AccessPDP) allOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 	ruleResultsByEntity := make(map[string]DataRuleResult)
 
 	//All of the data AttributeInstances in the arg have the same canonical name.
-	pdp.logger.Debug("Evaluating all-of decision for data attr %s", dataAttrsBySingleCanonicalName[0].GetCanonicalName())
+	pdp.logger.Debugf("Evaluating all-of decision for data attr %s", dataAttrsBySingleCanonicalName[0].GetCanonicalName())
 
 	//Go through every entity's AttributeInstance set...
 	for entityId, entityAttrs := range entityAttributes {
@@ -216,7 +216,7 @@ func (pdp *AccessPDP) allOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 		//For every unqiue data AttributeInstance (that is, unique data attribute value) in this set of data AttributeInstances sharing the same canonical name...
 		for _, dataAttrVal := range dataAttrsBySingleCanonicalName {
 			dvCanonicalName := dataAttrVal.GetCanonicalName()
-			pdp.logger.Debug("Evaluating all-of decision for data attr %s with value %s", dvCanonicalName, dataAttrVal.Value)
+			pdp.logger.Debugf("Evaluating all-of decision for data attr %s with value %s", dvCanonicalName, dataAttrVal.Value)
 			//See if
 			// 1. there exists an entity AttributeInstance in the set of AttributeInstances
 			// with the same canonical name as the data AttributeInstance in question
@@ -285,8 +285,8 @@ func (pdp *AccessPDP) anyOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 			//If we did not find the data AttributeInstance canonical name + value in the entity AttributeInstance set,
 			//then prepare a ValueFailure for that data AttributeInstance and value, for this entity
 			if !found {
-				denialMsg = fmt.Sprintf("anyOf not satisfied for canonical data attr+value %s and entity %s", dataAttrVal, entityId)
-				pdp.logger.Warn(denialMsg)
+				denialMsg = fmt.Sprintf("anyOf not satisfied for canonical data attr+value %s and entity %s - anyOf is permissive, so this doesn't mean overall failure", dataAttrVal, entityId)
+				pdp.logger.Debug(denialMsg)
 
 				valueFailures = append(valueFailures, ValueFailure{
 					DataAttribute: &dataAttrVal,
