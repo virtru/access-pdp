@@ -28,7 +28,7 @@ import (
 )
 ```
 
-See [./pdp/access-pdp-examples_test.go](./pdp/access-pdp-examples_test.go) for a complete example.
+See [./pdp/access-pdp-examples_test.go](./pdp/access-pdp-examples_test.go) for a complete example, and [Godocs here](https://pkg.go.dev/github.com/virtru/access-pdp) 
 
 ## Usage (As a gRPC server, for non-Go/remote endpoint usage)
 
@@ -52,6 +52,18 @@ GOBIN=/my-bin-dir go install github.com/virtru/access-pdp
   - `make protogen-python` to (re)generate Python client and server code
   - Currently only the gRPC Go server code is directly used by this repo, the others are there as an example.
   - Currently we use [Buf CLI](https://buf.build/product/cli/) to lint/build/codegen from our gRPC protobuf definitions - the Buf config may be extended to generate gRPC clients and servers for any supported language. 
+
+#### gRPC server environment variables
+
+| Name | Default | Description |
+| ---- | ------- | ----------- |
+| LISTEN_PORT | "50052" | Port the gRPC server will listen on |
+| LISTEN_HOST | "localhost" | hostname the server will listen on |
+| VERBOSE | "false" | Enable verbose/debug logging |
+| DISABLE_TRACING | "false" | Disable emitting OpenTelemetry traces (avoids junk timeouts if environment has no OT collector) |
+| ENABLE_GRPC_TLS | "false" | Start gRPC server in TLS mode  |
+| GRPC_TLS_CERTFILE | "x509/server_cert.pem" | If ENABLE_GRPC_TLS is true, the certfile the server will use for TLS  |
+| GRPC_TLS_KEYFILE | "x509/server_key.pem" | If ENABLE_GRPC_TLS is true, the keyfile the server will use for TLS  |
 
 ## Design Details
 In this implementation, the Access PDP:
@@ -89,3 +101,4 @@ For each entity identifer provided:
 ### Interface
 
 This library exposes gRPC endpoints, and so can be consumed by any code that understands the gRPC protocol. This library could be wrapped in a container and hosted out-of-process from an Access PEP, or it could be hosted in-process.
+
