@@ -408,8 +408,9 @@ func (pdp *AccessPDP) getHighestRankedInstanceFromDataAttributes(order []string,
 		pdp.logger.Debugf("Found data rank %d for value %s", foundRank, dataAttr.Value)
 		pdp.logger.Debugf("current max rank is %d", highestDVIndex)
 		//If this rank is a "higher rank" (that is, a lower index) than the last one,
+		//(or it is the same rank, to handle cases where the lowest is the only)
 		//it becomes the new high water mark rank.
-		if foundRank < highestDVIndex {
+		if foundRank <= highestDVIndex {
 			pdp.logger.Debugf("Updating rank!\n")
 			highestDVIndex = foundRank
 			highestRankedInstance = dataAttr
