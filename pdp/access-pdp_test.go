@@ -919,6 +919,48 @@ func Test_AccessPDP_Hierarchy_FailEntityValueTooLow(t *testing.T) {
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
 }
 
+func Test_AccessPDP_Hierarchy_FailEntityValueAndDataValuesBothLowest(t *testing.T) {
+	zapLog, _ := zap.NewDevelopment()
+
+	entityID := "4f6636ca-c60c-40d1-9f3f-015086303f74"
+	attrAuthorities := []string{"https://example.org"}
+	mockAttrDefinitions := []attrs.AttributeDefinition{
+		{
+			Authority: attrAuthorities[0],
+			Name:      "MyAttr",
+			Rule:      "hierarchy",
+			Order:     []string{"Privileged", "LessPrivileged", "NotPrivilegedAtAll"},
+			// GroupBy *AttributeInstance `json:"group_by,omitempty"`
+		},
+	}
+	mockDataAttrs := []attrs.AttributeInstance{
+		{
+			Authority: attrAuthorities[0],
+			Name:      mockAttrDefinitions[0].Name,
+			Value:     mockAttrDefinitions[0].Order[2],
+		},
+	}
+	mockEntityAttrs := map[string][]attrs.AttributeInstance{
+		entityID: {
+			{
+				Authority: "https://example.org",
+				Name:      "MyAttr",
+				Value:     "NotPrivilegedAtAll",
+			},
+		},
+	}
+	accessPDP := NewAccessPDP(zapLog.Sugar())
+
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+
+	assert.Nil(t, err)
+	assert.True(t, decisions[entityID].Access)
+	assert.Equal(t, 1, len(decisions[entityID].Results))
+	assert.True(t, decisions[entityID].Results[0].Passed)
+	assert.Equal(t, 0, len(decisions[entityID].Results[0].ValueFailures))
+	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
+}
+
 func Test_AccessPDP_Hierarchy_FailEntityValueOrder(t *testing.T) {
 	zapLog, _ := zap.NewDevelopment()
 
@@ -1130,6 +1172,7 @@ func Test_AccessPDP_Hierarchy_FailDataValueNotInOrder(t *testing.T) {
 	assert.False(t, decisions[entityID].Results[0].Passed)
 	assert.Equal(t, 1, len(decisions[entityID].Results[0].ValueFailures))
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
+	assert.Nil(t, decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
 }
 
 func Test_AccessPDP_Hierarchy_PassWithMixedKnownAndUnknownDataOrder(t *testing.T) {

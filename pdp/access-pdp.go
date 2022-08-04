@@ -325,11 +325,13 @@ func (pdp *AccessPDP) hierarchyRule(dataAttrsBySingleCanonicalName []attrs.Attri
 	ruleResultsByEntity := make(map[string]DataRuleResult)
 
 	highestDataInstance := pdp.getHighestRankedInstanceFromDataAttributes(order, dataAttrsBySingleCanonicalName)
-	dvCanonicalName := highestDataInstance.GetCanonicalName()
+	if highestDataInstance == nil {
+		pdp.logger.Warnf("No data attribute value found that matches attribute definition allowed values! All entity access will be rejected!")
+	} else {
+		pdp.logger.Debugf("Highest ranked hierarchy value on data attributes is: %s", highestDataInstance)
+	}
 	//All of the data AttributeInstances in the arg have the same canonical name.
-	pdp.logger.Debugf("Evaluating hierarchy decision for data attr %s", dvCanonicalName)
 
-	pdp.logger.Debugf("Highest ranked hierarchy value on data attributes is: %s", highestDataInstance)
 
 	//Go through every entity's AttributeInstance set...
 	for entityId, entityAttrs := range entityAttributes {
@@ -339,22 +341,35 @@ func (pdp *AccessPDP) hierarchyRule(dataAttrsBySingleCanonicalName []attrs.Attri
 		//Cluster entity AttributeInstances by canonical name...
 		entityAttrCluster := attrs.ClusterByCanonicalName(entityAttrs)
 
-		//For every unique data AttributeInstance (that is, value) in this set of data AttributeInstances sharing the same canonical name...
-		pdp.logger.Debugf("Evaluating hierarchy decision for data attr %s with value %s", dvCanonicalName, highestDataInstance.Value)
+		if highestDataInstance != nil {
+			dvCanonicalName := highestDataInstance.GetCanonicalName()
+			//For every unique data AttributeInstance (that is, value) in this set of data AttributeInstances sharing the same canonical name...
+			pdp.logger.Debugf("Evaluating hierarchy decision for data attr %s with value %s", dvCanonicalName, highestDataInstance.Value)
 
-		//Compare the (one or more) AttributeInstances (that is, values) for this canonical name to the (one) data AttributeInstance, and see which is "higher".
-		entityPassed = entityRankGreaterThanOrEqualToDataRank(order, highestDataInstance, entityAttrCluster[dvCanonicalName])
-		denialMsg := ""
+			//Compare the (one or more) AttributeInstances (that is, values) for this canonical name to the (one) data AttributeInstance, and see which is "higher".
+			entityPassed = entityRankGreaterThanOrEqualToDataRank(order, highestDataInstance, entityAttrCluster[dvCanonicalName])
 
-		//If the rank of the data AttributeInstance (that is, value) is higher than the highest entity AttributeInstance, then FAIL.
-		if !entityPassed {
-			denialMsg = fmt.Sprintf("Hierarchy - Entity: %s hierarchy values rank below data hierarchy value of %s", entityId, highestDataInstance.Value)
+			//If the rank of the data AttributeInstance (that is, value) is higher than the highest entity AttributeInstance, then FAIL.
+			if !entityPassed {
+				denialMsg := fmt.Sprintf("Hierarchy - Entity: %s hierarchy values rank below data hierarchy value of %s", entityId, highestDataInstance.Value)
+				pdp.logger.Warn(denialMsg)
+
+				//Since there is only one data value we (ultimately) consider in a HierarchyRule, we will only ever
+				//have one ValueFailure per entity at most
+				valueFailures = append(valueFailures, ValueFailure{
+					DataAttribute: highestDataInstance,
+					Message:       denialMsg,
+				})
+			}
+			//It's possible we couldn't FIND a highest data value - because none of the data values are in the set of valid attribute definition values!
+			//If this happens, we can't do a comparison, and access will be denied for every entity for this data attribute instance
+		} else {
+			//If every data attribute value we're comparing against is invalid (that is, none of them exist in the attribute definition)
+			//then we must fail and return a nil instance.
+			denialMsg := fmt.Sprintf("Hierarchy - No data values found exist in attribute definition, no hierarchy comparison possible, entity %s is denied", entityId)
 			pdp.logger.Warn(denialMsg)
-
-			//Since there is only one data value we (ultimately) consider in a HierarchyRule, we will only ever
-			//have one ValueFailure per entity at most
 			valueFailures = append(valueFailures, ValueFailure{
-				DataAttribute: highestDataInstance,
+				DataAttribute: nil,
 				Message:       denialMsg,
 			})
 		}
@@ -398,13 +413,22 @@ func (pdp *AccessPDP) groupByFilterEntityAttributeInstances(entityAttributes map
 //Since by definition hierarchy comparisons have to be one-data-value-to-many-entity-values, this won't work.
 //So, in a scenario where there are multiple data values to choose from, grab the "highest" ranked value
 //present in the set of data AttributeInstances, and use that as the point of comparison, ignoring the "lower-ranked" data values.
+//If we find a data value that does not exist in the attribute definition's list of valid values, we will skip it
+//If NONE of the data values exist in the attribute defintiions list of valid values, return a nil instance
 func (pdp *AccessPDP) getHighestRankedInstanceFromDataAttributes(order []string, dataAttributeCluster []attrs.AttributeInstance) *attrs.AttributeInstance {
 	//For hierarchy, convention is 0 == most privileged, 1 == less privileged, etc
 	//So initialize with the LEAST privileged rank in the defined order
 	var highestDVIndex int = (len(order) - 1)
-	var highestRankedInstance attrs.AttributeInstance
+	var highestRankedInstance *attrs.AttributeInstance = nil
 	for _, dataAttr := range dataAttributeCluster {
 		foundRank := getOrderOfValue(order, dataAttr.Value)
+		if foundRank == -1 {
+			msg := fmt.Sprintf("Data value %s is not in %s and is not a valid value for this attribute - ignoring this invalid value and continuing to look for a valid one...", dataAttr.Value, order)
+			pdp.logger.Warn(msg)
+			//If this isnt a valid data value, skip this iteration and look at the next one - maybe it is?
+			//If none of them are valid, we should return a nil instance
+			continue
+		}
 		pdp.logger.Debugf("Found data rank %d for value %s", foundRank, dataAttr.Value)
 		pdp.logger.Debugf("current max rank is %d", highestDVIndex)
 		//If this rank is a "higher rank" (that is, a lower index) than the last one,
@@ -413,10 +437,11 @@ func (pdp *AccessPDP) getHighestRankedInstanceFromDataAttributes(order []string,
 		if foundRank <= highestDVIndex {
 			pdp.logger.Debugf("Updating rank!\n")
 			highestDVIndex = foundRank
-			highestRankedInstance = dataAttr
+			gotAttr := dataAttr
+			highestRankedInstance = &gotAttr
 		}
 	}
-	return &highestRankedInstance
+	return highestRankedInstance
 }
 
 //Given a single AttributeInstance, and an arbitrary set of AttributeInstances,
@@ -476,12 +501,13 @@ func entityRankGreaterThanOrEqualToDataRank(order []string, dataAttribute *attrs
 //return the rank #/index of the singular AttributeInstance
 func getOrderOfValue(order []string, value string) int {
 	//For hierarchy, convention is 0 == most privileged, 1 == less privileged, etc
-	//So initialize with the LEAST privileged rank in the defined order
-	var dvIndex int = (len(order) - 1)
+	dvIndex := -1 // -1 == Not Found in the set - this should always be a failure.
 	for index := range order {
 		if order[index] == value {
 			dvIndex = index
 		}
 	}
+
+	//We either found the right index, or we return -1
 	return dvIndex
 }
