@@ -2,3 +2,4 @@
 /server
 /vendor/
 *.out
+/clients/python/*/dist/
