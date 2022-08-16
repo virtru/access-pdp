@@ -24,3 +24,9 @@ jobs:
         run: go test --coverprofile cover.out ./pdp ./attributes
       - name: Check coverage meets threshold
         run: overcover --coverprofile cover.out ./pdp ./attributes --threshold ${{ env.COVERAGE_THRESH_PCT }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Validate python project files
+        
+
