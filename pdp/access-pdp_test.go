@@ -114,7 +114,7 @@ func Test_AccessPDP_AnyOf_FailMissingValue(t *testing.T) {
 	assert.Equal(t, 1, len(decisions[entityID].Results))
 	assert.False(t, decisions[entityID].Results[0].Passed)
 	assert.Equal(t, 2, len(decisions[entityID].Results[0].ValueFailures))
-	assert.Equal(t, &mockDataAttrs[1], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
+	assert.Equal(t, &mockDataAttrs[0], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
 }
 
@@ -167,7 +167,7 @@ func Test_AccessPDP_AnyOf_FailMissingAttr(t *testing.T) {
 	assert.Equal(t, 1, len(decisions[entityID].Results))
 	assert.False(t, decisions[entityID].Results[0].Passed)
 	assert.Equal(t, 2, len(decisions[entityID].Results[0].ValueFailures))
-	assert.Equal(t, &mockDataAttrs[1], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
+	assert.Equal(t, &mockDataAttrs[0], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
 }
 
@@ -220,7 +220,7 @@ func Test_AccessPDP_AnyOf_FailAttrWrongNamespace(t *testing.T) {
 	assert.Equal(t, 1, len(decisions[entityID].Results))
 	assert.False(t, decisions[entityID].Results[0].Passed)
 	assert.Equal(t, 2, len(decisions[entityID].Results[0].ValueFailures))
-	assert.Equal(t, &mockDataAttrs[1], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
+	assert.Equal(t, &mockDataAttrs[0], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
 }
 
@@ -355,7 +355,7 @@ func Test_AccessPDP_AnyOf_NoEntityAttributes_Fails(t *testing.T) {
 	assert.Equal(t, 1, len(decisions[entityID].Results))
 	assert.False(t, decisions[entityID].Results[0].Passed)
 	assert.Equal(t, 2, len(decisions[entityID].Results[0].ValueFailures))
-	assert.Equal(t, &mockDataAttrs[1], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
+	assert.Equal(t, &mockDataAttrs[0], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
 }
 
@@ -591,7 +591,7 @@ func Test_AccessPDP_AllOf_FailMissingValue(t *testing.T) {
 	assert.Equal(t, 1, len(decisions[entityID].Results))
 	assert.False(t, decisions[entityID].Results[0].Passed)
 	assert.Equal(t, 1, len(decisions[entityID].Results[0].ValueFailures))
-	assert.Equal(t, &mockDataAttrs[1], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
+	assert.Equal(t, &mockDataAttrs[0], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
 }
 
@@ -644,7 +644,7 @@ func Test_AccessPDP_AllOf_FailMissingAttr(t *testing.T) {
 	assert.Equal(t, 1, len(decisions[entityID].Results))
 	assert.False(t, decisions[entityID].Results[0].Passed)
 	assert.Equal(t, 2, len(decisions[entityID].Results[0].ValueFailures))
-	assert.Equal(t, &mockDataAttrs[1], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
+	assert.Equal(t, &mockDataAttrs[0], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
 }
 
@@ -702,7 +702,7 @@ func Test_AccessPDP_AllOf_FailAttrWrongNamespace(t *testing.T) {
 	assert.Equal(t, 1, len(decisions[entityID].Results))
 	assert.False(t, decisions[entityID].Results[0].Passed)
 	assert.Equal(t, 2, len(decisions[entityID].Results[0].ValueFailures))
-	assert.Equal(t, &mockDataAttrs[1], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
+	assert.Equal(t, &mockDataAttrs[0], decisions[entityID].Results[0].ValueFailures[0].DataAttribute)
 	assert.Equal(t, &mockAttrDefinitions[0], decisions[entityID].Results[0].RuleDefinition)
 }
 

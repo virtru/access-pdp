@@ -112,8 +112,8 @@ func DataRuleResultsToPb(results []pdp.DataRuleResult) []*pbPDP.DataRuleResult {
 
 	for _, v := range results {
 		var convFails []*pbPDP.ValueFailure
-		for _, fail := range v.ValueFailures {
-			convFails = append(convFails, ValueFailureToPb(&fail))
+		for fIdx := range v.ValueFailures {
+			convFails = append(convFails, ValueFailureToPb(&v.ValueFailures[fIdx]))
 		}
 		pbresults = append(pbresults, &pbPDP.DataRuleResult{Passed: v.Passed, RuleDefinition: AttributeDefinitionToPb(v.RuleDefinition), ValueFailures: convFails})
 	}

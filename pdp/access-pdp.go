@@ -129,7 +129,7 @@ func (pdp *AccessPDP) DetermineAccess(dataAttributes []attrs.AttributeInstance, 
 		//If GroupBy is set, determine which entities (out of the set of entities and their respective AttributeInstances)
 		//will be considered for evaluation under this rule definition.
 		//
-		//If GroupBy is not set, then we always consider all entities for evaulation under a rule definition
+		//If GroupBy is not set, then we always consider all entities for evaluation under a rule definition
 		//
 		//If this rule simply does not apply to a given entity ID as defined by the AttributeDefinition we have,
 		//and the entity AttributeInstances that entity ID has, then that entity ID passed (or skipped) this rule.
@@ -138,9 +138,6 @@ func (pdp *AccessPDP) DetermineAccess(dataAttributes []attrs.AttributeInstance, 
 			pdp.logger.Debugf("Attribute Definition's GroupBy is set to %s, filtering entities that will be considered for rule %s", attrDefinition, canonicalName)
 			filteredEntities = pdp.groupByFilterEntityAttributeInstances(entityAttributeSets, attrDefinition.GroupBy)
 			pdp.logger.Debugf("For this definition, according to GroupBy, considering %d out of %d total entities", len(filteredEntities), len(entityAttributeSets))
-			//TODO I wonder if we should return a "Decision == skipped" for each of these entities that would get
-			//excluded by grouping, just to keep things consistent. On the other hand, caller can easily figure this out
-			//if they care, and I don't want to introduce trinary access states :D
 		}
 
 		var entityRuleDecision map[string]DataRuleResult
@@ -214,14 +211,14 @@ func (pdp *AccessPDP) allOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 		entityAttrCluster := attrs.ClusterByCanonicalName(entityAttrs)
 
 		//For every unqiue data AttributeInstance (that is, unique data attribute value) in this set of data AttributeInstances sharing the same canonical name...
-		for _, dataAttrVal := range dataAttrsBySingleCanonicalName {
+		for dvIndex, dataAttrVal := range dataAttrsBySingleCanonicalName {
 			dvCanonicalName := dataAttrVal.GetCanonicalName()
 			pdp.logger.Debugf("Evaluating all-of decision for data attr %s with value %s", dvCanonicalName, dataAttrVal.Value)
 			//See if
 			// 1. there exists an entity AttributeInstance in the set of AttributeInstances
 			// with the same canonical name as the data AttributeInstance in question
 			// 2. It has the same VALUE as the data AttributeInstance in question
-			found := findInstanceValueInCluster(&dataAttrVal, entityAttrCluster[dvCanonicalName])
+			found := findInstanceValueInCluster(&dataAttrsBySingleCanonicalName[dvIndex], entityAttrCluster[dvCanonicalName])
 
 			denialMsg := ""
 			//If we did not find the data AttributeInstance canonical name + value in the entity AttributeInstance set,
@@ -231,7 +228,7 @@ func (pdp *AccessPDP) allOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 				pdp.logger.Warn(denialMsg)
 				//Append the ValueFailure to the set of entity value failures
 				valueFailures = append(valueFailures, ValueFailure{
-					DataAttribute: &dataAttrVal,
+					DataAttribute: &dataAttrsBySingleCanonicalName[dvIndex],
 					Message:       denialMsg,
 				})
 			}
@@ -272,14 +269,14 @@ func (pdp *AccessPDP) anyOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 		entityAttrCluster := attrs.ClusterByCanonicalName(entityAttrs)
 
 		//For every unqiue data AttributeInstance (that is, value) in this set of data AttributeInstance sharing the same canonical name...
-		for _, dataAttrVal := range dataAttrsBySingleCanonicalName {
+		for dvIndex, dataAttrVal := range dataAttrsBySingleCanonicalName {
 			pdp.logger.Debugf("Evaluating anyOf decision for data attr %s with value %s", dvCanonicalName, dataAttrVal.Value)
 
 			//See if
 			// 1. there exists an entity AttributeInstance in the set of AttributeInstances
 			// with the same canonical name as the data AttributeInstance in question
 			// 2. It has the same VALUE as the data AttributeInstance in question
-			found := findInstanceValueInCluster(&dataAttrVal, entityAttrCluster[dvCanonicalName])
+			found := findInstanceValueInCluster(&dataAttrsBySingleCanonicalName[dvIndex], entityAttrCluster[dvCanonicalName])
 
 			denialMsg := ""
 			//If we did not find the data AttributeInstance canonical name + value in the entity AttributeInstance set,
@@ -289,7 +286,7 @@ func (pdp *AccessPDP) anyOfRule(dataAttrsBySingleCanonicalName []attrs.Attribute
 				pdp.logger.Debug(denialMsg)
 
 				valueFailures = append(valueFailures, ValueFailure{
-					DataAttribute: &dataAttrVal,
+					DataAttribute: &dataAttrsBySingleCanonicalName[dvIndex],
 					Message:       denialMsg,
 				})
 			}
@@ -331,7 +328,6 @@ func (pdp *AccessPDP) hierarchyRule(dataAttrsBySingleCanonicalName []attrs.Attri
 		pdp.logger.Debugf("Highest ranked hierarchy value on data attributes is: %s", highestDataInstance)
 	}
 	//All of the data AttributeInstances in the arg have the same canonical name.
-
 
 	//Go through every entity's AttributeInstance set...
 	for entityId, entityAttrs := range entityAttributes {
@@ -458,7 +454,7 @@ func findInstanceValueInCluster(instance *attrs.AttributeInstance, cluster []att
 //Given set of ordered/ranked values, a data singular AttributeInstance, and a set of entity AttributeInstances,
 //determine if the entity AttributeInstances include a ranked value that equals or exceeds
 //the rank of the data AttributeInstance value.
-//For heirarchy, convention is 0 == most privileged, 1 == less privileged, etc
+//For hierarchy, convention is 0 == most privileged, 1 == less privileged, etc
 func entityRankGreaterThanOrEqualToDataRank(order []string, dataAttribute *attrs.AttributeInstance, entityAttributeCluster []attrs.AttributeInstance) bool {
 	//default to least-perm
 	result := false
