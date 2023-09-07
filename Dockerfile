@@ -42,11 +42,6 @@ RUN buf lint && buf generate || echo 'TODO fix service proto'
 
 WORKDIR /build
 
-# TODO Move to github actions. See https://github.com/golangci/golangci-lint-action
-# SHELL ["/bin/sh", "-e"]
-# RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s 
-# RUN ./golangci-lint --version && ./golangci-lint run --timeout 20m
-
 # Run tests
 RUN go test --coverprofile cover.out ./attributes ./pdp
 
