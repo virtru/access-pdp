@@ -11,7 +11,7 @@ import (
 	attrs "github.com/virtru/access-pdp/attributes"
 )
 
-//AnyOf tests
+// AnyOf tests
 func Test_AccessPDP_AnyOf_Pass(t *testing.T) {
 	zapLog, _ := zap.NewDevelopment()
 
@@ -53,8 +53,9 @@ func Test_AccessPDP_AnyOf_Pass(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.True(t, decisions[entityID].Access)
@@ -106,8 +107,9 @@ func Test_AccessPDP_AnyOf_FailMissingValue(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -159,8 +161,9 @@ func Test_AccessPDP_AnyOf_FailMissingAttr(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -212,8 +215,9 @@ func Test_AccessPDP_AnyOf_FailAttrWrongNamespace(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -297,8 +301,9 @@ func Test_AccessPDP_AnyOf_GroupBy(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 
@@ -347,8 +352,9 @@ func Test_AccessPDP_AnyOf_NoEntityAttributes_Fails(t *testing.T) {
 		entityID: {},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -391,8 +397,9 @@ func Test_AccessPDP_AnyOf_NoDataAttributes_NoDecisions(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.Nil(t, decisions[entityID])
@@ -465,8 +472,9 @@ func Test_AccessPDP_AnyOf_AllEntitiesFilteredOutOfDataAttributeComparison_NoDeci
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 
@@ -479,7 +487,7 @@ func Test_AccessPDP_AnyOf_AllEntitiesFilteredOutOfDataAttributeComparison_NoDeci
 	assert.Equal(t, 0, len(decisions))
 }
 
-//AllOf tests
+// AllOf tests
 func Test_AccessPDP_AllOf_Pass(t *testing.T) {
 	zapLog, _ := zap.NewDevelopment()
 
@@ -526,8 +534,9 @@ func Test_AccessPDP_AllOf_Pass(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.True(t, decisions[entityID].Access)
@@ -583,8 +592,9 @@ func Test_AccessPDP_AllOf_FailMissingValue(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -636,8 +646,8 @@ func Test_AccessPDP_AllOf_FailMissingAttr(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -694,8 +704,8 @@ func Test_AccessPDP_AllOf_FailAttrWrongNamespace(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -789,8 +799,8 @@ func Test_AccessPDP_AllOf_GroupBy(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 
@@ -809,7 +819,7 @@ func Test_AccessPDP_AllOf_GroupBy(t *testing.T) {
 	assert.Equal(t, 1, len(decisions[entityID2].Results))
 }
 
-//Hierarchy tests
+// Hierarchy tests
 func Test_AccessPDP_Hierarchy_Pass(t *testing.T) {
 	zapLog, _ := zap.NewDevelopment()
 
@@ -851,8 +861,8 @@ func Test_AccessPDP_Hierarchy_Pass(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.True(t, decisions[entityID].Access)
@@ -908,8 +918,8 @@ func Test_AccessPDP_Hierarchy_FailEntityValueTooLow(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -950,8 +960,8 @@ func Test_AccessPDP_Hierarchy_FailEntityValueAndDataValuesBothLowest(t *testing.
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.True(t, decisions[entityID].Access)
@@ -1007,8 +1017,8 @@ func Test_AccessPDP_Hierarchy_FailEntityValueOrder(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -1064,8 +1074,8 @@ func Test_AccessPDP_Hierarchy_FailMultipleHierarchyDataValues(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -1116,8 +1126,8 @@ func Test_AccessPDP_Hierarchy_FailEntityValueNotInOrder(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -1163,8 +1173,8 @@ func Test_AccessPDP_Hierarchy_FailDataValueNotInOrder(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -1216,8 +1226,8 @@ func Test_AccessPDP_Hierarchy_PassWithMixedKnownAndUnknownDataOrder(t *testing.T
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.True(t, decisions[entityID].Access)
@@ -1263,8 +1273,8 @@ func Test_AccessPDP_Hierarchy_FailWithWrongNamespace(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -1321,8 +1331,8 @@ func Test_AccessPDP_Hierarchy_FailWithMixedKnownAndUnknownEntityOrder(t *testing
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	assert.False(t, decisions[entityID].Access)
@@ -1405,8 +1415,8 @@ func Test_AccessPDP_Hierarchy_GroupBy(t *testing.T) {
 		},
 	}
 	accessPDP := NewAccessPDP(zapLog.Sugar())
-
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, ctx.Background())
+	context := ctx.Background()
+	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
 
 	assert.Nil(t, err)
 	//Overall for entity 1 should be YES

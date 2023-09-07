@@ -51,8 +51,9 @@ func Example() {
 		},
 	}
 	accessPDP := accesspdp.NewAccessPDP(zapLog.Sugar())
+	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(DataAttrs, EntityAttrs, AttrDefinitions, ctx.Background())
+	decisions, err := accessPDP.DetermineAccess(DataAttrs, EntityAttrs, AttrDefinitions, &context)
 	if err != nil {
 		zapLog.Error("Could not generate a decision!")
 	}
