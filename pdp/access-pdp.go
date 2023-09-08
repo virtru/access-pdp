@@ -181,7 +181,7 @@ func (pdp *AccessPDP) DetermineAccess(dataAttributes []attrs.AttributeInstance, 
 			entityRuleDecision = pdp.hierarchyRule(&hierarchyContext, distinctValues, filteredEntities, attrDefinition.GroupBy, attrDefinition.Order)
 			hierarchySpan.End()
 		default:
-			return nil, fmt.Errorf("Unrecognized AttributeDefinition Rule: %s", attrDefinition.Rule)
+			return nil, fmt.Errorf("unrecognized AttributeDefinition rule: %s", attrDefinition.Rule)
 		}
 
 		//Roll up the per-data-rule decisions for each entity considered for this rule into the overall decision
@@ -248,7 +248,7 @@ func (pdp *AccessPDP) allOfRule(context *ctx.Context, dataAttrsBySingleCanonical
 			//then prepare a ValueFailure for that data AttributeInstance (that is, attribute value), for this entity
 			if !found {
 				denialMsg = fmt.Sprintf("AllOf not satisfied for canonical data attr+value %s and entity %s", dataAttrVal, entityId)
-				pdp.logger.Warn(denialMsg)
+				pdp.log(context, slog.LevelWarn, denialMsg)
 				//Append the ValueFailure to the set of entity value failures
 				valueFailures = append(valueFailures, ValueFailure{
 					DataAttribute: &dataAttrsBySingleCanonicalName[dvIndex],
@@ -281,7 +281,7 @@ func (pdp *AccessPDP) anyOfRule(context *ctx.Context, dataAttrsBySingleCanonical
 
 	dvCanonicalName := dataAttrsBySingleCanonicalName[0].GetCanonicalName()
 	//All of the data AttributeInstances in the arg have the same canonical name.
-	pdp.log(context, slog.LevelDebug, "Evaluating anyOf decision for data attr %s", dvCanonicalName)
+	pdp.log(context, slog.LevelDebug, "Evaluating anyOf decision", "attr", dvCanonicalName)
 
 	//Go through every entity's AttributeInstance set...
 	for entityId, entityAttrs := range entityAttributes {
@@ -293,7 +293,7 @@ func (pdp *AccessPDP) anyOfRule(context *ctx.Context, dataAttrsBySingleCanonical
 
 		//For every unqiue data AttributeInstance (that is, value) in this set of data AttributeInstance sharing the same canonical name...
 		for dvIndex, dataAttrVal := range dataAttrsBySingleCanonicalName {
-			pdp.log(context, slog.LevelDebug, "Evaluating anyOf decision for data attr %s with value %s", dvCanonicalName, dataAttrVal.Value)
+			pdp.log(context, slog.LevelDebug, "Evaluating anyOf decision", "attr", dvCanonicalName, "value", dataAttrVal.Value)
 
 			//See if
 			// 1. there exists an entity AttributeInstance in the set of AttributeInstances
@@ -320,7 +320,7 @@ func (pdp *AccessPDP) anyOfRule(context *ctx.Context, dataAttrsBySingleCanonical
 		//possess AT LEAST ONE of the values in its entity AttributeInstance cluster,
 		//and we have satisfied AnyOf
 		if len(valueFailures) < len(dataAttrsBySingleCanonicalName) {
-			pdp.log(context, slog.LevelDebug, "anyOf satisfied for canonical data attr+value %s and entity %s", dvCanonicalName, entityId)
+			pdp.log(context, slog.LevelDebug, "anyOf satisfied for canonical data", "attr", dvCanonicalName, "entityId", entityId)
 			entityPassed = true
 		}
 		ruleResultsByEntity[entityId] = DataRuleResult{
@@ -407,13 +407,13 @@ func (pdp *AccessPDP) hierarchyRule(context *ctx.Context, dataAttrsBySingleCanon
 // that lack the the GroupBy AttributeInstance, returning a new, reduced set of entities that all have the
 // GroupBy AttributeInstance.
 func (pdp *AccessPDP) groupByFilterEntityAttributeInstances(context *ctx.Context, entityAttributes map[string][]attrs.AttributeInstance, groupBy *attrs.AttributeInstance) map[string][]attrs.AttributeInstance {
-	pdp.log(context, slog.LevelDebug, "Filtering out entities by groupby attribute %s", groupBy)
+	pdp.log(context, slog.LevelDebug, "Filtering out entities with groupby", "groupby", groupBy)
 
 	filteredEntitySet := make(map[string][]attrs.AttributeInstance)
 
 	//Go through every entity's AttributeInstance set...
 	for entityId, entityAttrs := range entityAttributes {
-		pdp.log(context, slog.LevelDebug, "Filtering entity %s attribute set by groupby attribute %s", entityId, groupBy)
+		pdp.log(context, slog.LevelDebug, "Filtering entity with groupby", "entityId", entityId, "groupBy", groupBy)
 		//If this entity has the groupBy AttributeInstance within its set of AttributeInstances
 		if findInstanceValueInCluster(groupBy, entityAttrs) {
 			//Then it will be included in the map of filtered entities.
