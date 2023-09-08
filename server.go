@@ -31,7 +31,7 @@ var cfg EnvConfig
 
 var tracer = otel.Tracer("main")
 
-//Env config
+// Env config
 type EnvConfig struct {
 	ListenPort      string `env:"LISTEN_PORT" envDefault:"50052"`
 	ListenHost      string `env:"LISTEN_HOST" envDefault:"localhost"`
@@ -65,7 +65,7 @@ func (s *accessPDPServer) DetermineAccess(req *pbPDP.DetermineAccessRequest, str
 	handlerCtx, handlerSpan := tracer.Start(stream.Context(), "DetermineAccess gRPC")
 	defer handlerSpan.End()
 
-	entityDecisions, err := s.accessPDP.DetermineAccess(dataAttrs, entityAttrSets, definitions, handlerCtx)
+	entityDecisions, err := s.accessPDP.DetermineAccess(dataAttrs, entityAttrSets, definitions, &handlerCtx)
 	if err != nil {
 		return err
 	}

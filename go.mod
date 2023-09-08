@@ -1,6 +1,6 @@
 module github.com/virtru/access-pdp
 
-go 1.18
+go 1.21
 
 require (
 	github.com/caarlos0/env v3.5.0+incompatible
