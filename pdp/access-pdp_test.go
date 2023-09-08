@@ -2,6 +2,7 @@ package pdp
 
 import (
 	ctx "context"
+	"log/slog"
 
 	"testing"
 
@@ -13,8 +14,6 @@ import (
 
 // AnyOf tests
 func Test_AccessPDP_AnyOf_Pass(t *testing.T) {
-	zapLog, _ := zap.NewDevelopment()
-
 	entityID := "4f6636ca-c60c-40d1-9f3f-015086303f74"
 	attrAuthorities := []string{"https://example.org"}
 	mockAttrDefinitions := []attrs.AttributeDefinition{
@@ -52,10 +51,15 @@ func Test_AccessPDP_AnyOf_Pass(t *testing.T) {
 			},
 		},
 	}
-	accessPDP := NewAccessPDP(zapLog.Sugar())
+	accessPDP := NewAccessPDPWithSlog(slog.Default())
 	context := ctx.Background()
 
-	decisions, err := accessPDP.DetermineAccess(mockDataAttrs, mockEntityAttrs, mockAttrDefinitions, &context)
+	decisions, err := accessPDP.DetermineAccess(
+		mockDataAttrs,
+		mockEntityAttrs,
+		mockAttrDefinitions,
+		&context,
+	)
 
 	assert.Nil(t, err)
 	assert.True(t, decisions[entityID].Access)
