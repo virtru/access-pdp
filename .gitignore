@@ -3,3 +3,5 @@
 /vendor/
 *.out
 /clients/python/*/dist/
+/.idea
+access-pdp
