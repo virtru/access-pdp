@@ -45,8 +45,8 @@ dockerbuildpush: clean docker-buildx-armsetup
 .PHONY: test
 test: lint
 	@echo "Testing Go code"
-	@go test --coverprofile cover.out ./attributes ./pdp
-	@overcover --coverprofile cover.out ./attributes ./pdp --threshold $(COVERAGE_THRESH_PCT)
+	@go test --coverprofile cover.out ./attributes ./pdp ./protoconv
+	@overcover --coverprofile cover.out ./attributes ./pdp ./protoconv --threshold $(COVERAGE_THRESH_PCT)
 
 .PHONY: lint
 lint: localprep

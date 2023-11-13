@@ -3,17 +3,14 @@ package pdp_test
 import (
 	ctx "context"
 	"fmt"
-
-	"go.uber.org/zap"
+	"log/slog"
 
 	attrs "github.com/virtru/access-pdp/attributes"
 	accesspdp "github.com/virtru/access-pdp/pdp"
 )
 
-//AnyOf tests
+// AnyOf tests
 func Example() {
-	zapLog, _ := zap.NewDevelopment()
-
 	entityID := "4f6636ca-c60c-40d1-9f3f-015086303f74"
 	attrAuthorities := []string{"https://example.org"}
 	AttrDefinitions := []attrs.AttributeDefinition{
@@ -35,6 +32,11 @@ func Example() {
 			Name:      AttrDefinitions[0].Name,
 			Value:     AttrDefinitions[0].Order[0],
 		},
+		{
+			Authority: attrAuthorities[0],
+			Name:      AttrDefinitions[0].Name,
+			Value:     "NegativeTypoValue",
+		},
 	}
 	EntityAttrs := map[string][]attrs.AttributeInstance{
 		entityID: {
@@ -50,12 +52,13 @@ func Example() {
 			},
 		},
 	}
-	accessPDP := accesspdp.NewAccessPDP(zapLog.Sugar())
+	slog.Default().Handler().Enabled(ctx.Background(), slog.LevelInfo)
+	accessPDP := accesspdp.NewAccessPDPWithSlog(slog.Default())
 	context := ctx.Background()
 
 	decisions, err := accessPDP.DetermineAccess(DataAttrs, EntityAttrs, AttrDefinitions, &context)
 	if err != nil {
-		zapLog.Error("Could not generate a decision!")
+		slog.Error("Could not generate a decision!")
 	}
 
 	fmt.Printf("Decision result: %+v", decisions)
