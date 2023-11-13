@@ -19,7 +19,7 @@ func TestAttributeDefinition_GetAuthority(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		// Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -52,7 +52,7 @@ func TestAttributeDefinition_GetCanonicalName(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		// Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -82,7 +82,7 @@ func TestAttributeInstance_GetAuthority(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		// Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -109,7 +109,7 @@ func TestAttributeInstance_GetCanonicalName(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		// Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -136,7 +136,7 @@ func TestAttributeInstance_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		// Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -214,7 +214,7 @@ func TestParseInstanceFromParts(t *testing.T) {
 		want    AttributeInstance
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		// Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -240,7 +240,7 @@ func TestParseInstanceFromURI(t *testing.T) {
 		want    AttributeInstance
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		// Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
