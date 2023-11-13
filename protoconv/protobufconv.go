@@ -99,8 +99,14 @@ func PbToEntityAttrSets(pbsets map[string]*pbPDP.ListOfAttributeInstances) map[s
 }
 
 func ValueFailureToPb(failure *pdp.ValueFailure) *pbPDP.ValueFailure {
+	var pbDataAttribute *pbAttr.AttributeInstance
+	if failure.DataAttribute != nil {
+		pbDataAttribute = AttributeInstanceToPb(failure.DataAttribute)
+	}
+
+	// Construct the ValueFailure protobuf message
 	pbFail := pbPDP.ValueFailure{
-		DataAttribute: AttributeInstanceToPb(failure.DataAttribute),
+		DataAttribute: pbDataAttribute,
 		Message:       failure.Message,
 	}
 
