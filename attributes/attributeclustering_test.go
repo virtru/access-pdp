@@ -19,7 +19,18 @@ func TestAttributeDefinition_GetAuthority(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// Add test cases.
+		{
+			name: "positive",
+			fields: fields{
+				Authority: "myauthority",
+				Name:      "",
+				Rule:      "",
+				State:     "",
+				Order:     nil,
+				GroupBy:   nil,
+			},
+			want: "myauthority",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -52,7 +63,18 @@ func TestAttributeDefinition_GetCanonicalName(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// Add test cases.
+		{
+			name: "positive",
+			fields: fields{
+				Authority: "a",
+				Name:      "b",
+				Rule:      "c",
+				State:     "d",
+				Order:     nil,
+				GroupBy:   nil,
+			},
+			want: "a/attr/b",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -82,7 +104,15 @@ func TestAttributeInstance_GetAuthority(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// Add test cases.
+		{
+			name: "positive",
+			fields: fields{
+				Authority: "a",
+				Name:      "b",
+				Value:     "c",
+			},
+			want: "a",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -109,7 +139,15 @@ func TestAttributeInstance_GetCanonicalName(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// Add test cases.
+		{
+			name: "positive",
+			fields: fields{
+				Authority: "a",
+				Name:      "b",
+				Value:     "c",
+			},
+			want: "a/attr/b",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -136,7 +174,15 @@ func TestAttributeInstance_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// Add test cases.
+		{
+			name: "positive",
+			fields: fields{
+				Authority: "a",
+				Name:      "b",
+				Value:     "c",
+			},
+			want: "a/attr/b/value/c",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -214,7 +260,20 @@ func TestParseInstanceFromParts(t *testing.T) {
 		want    AttributeInstance
 		wantErr bool
 	}{
-		// Add test cases.
+		{
+			name: "positive",
+			args: args{
+				namespace: "https://a",
+				name:      "b",
+				value:     "c",
+			},
+			want: AttributeInstance{
+				Authority: "https://a",
+				Name:      "b",
+				Value:     "c",
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -240,7 +299,18 @@ func TestParseInstanceFromURI(t *testing.T) {
 		want    AttributeInstance
 		wantErr bool
 	}{
-		// Add test cases.
+		{
+			name: "positive",
+			args: args{
+				attributeURI: "https://a/attr/b/value/c",
+			},
+			want: AttributeInstance{
+				Authority: "https://a",
+				Name:      "b",
+				Value:     "c",
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
