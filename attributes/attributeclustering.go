@@ -3,14 +3,14 @@ package attributes
 // Clusterable is an interface that either AttributeInstances or AttributeDefinitions can implement,
 // to support easily "clustering" or grouping a slice of either by their shared CanonicalName or Authority.
 type Clusterable interface {
-	// Type constraint (generics)
+	// AttributeInstance Type constraint (generics)
 	// Both AttributeDefinitions and AttributeInstances are clusterable
 	AttributeInstance | AttributeDefinition
 
-	// Returns the canonical URI representation of this clusterable thing, in the format
+	// GetCanonicalName Returns the canonical URI representation of this clusterable thing, in the format
 	//  <scheme>://<hostname>/attr/<name>
 	GetCanonicalName() string
-	// Returns the authority of this clusterable thing, in the format
+	// GetAuthority Returns the authority of this clusterable thing, in the format
 	//  <scheme>://<hostname>
 	GetAuthority() string
 }
