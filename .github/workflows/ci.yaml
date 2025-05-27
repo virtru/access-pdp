@@ -1,4 +1,4 @@
-name: Quality Gate and SonarCloud analysis
+name: Quality Gate
 env:
   COVERAGE_THRESH_PCT: 81
 
@@ -22,11 +22,6 @@ jobs:
         run: go install github.com/klmitch/overcover@v1.2.1
       - name: Run unit test with coverage
         run: go test --coverprofile cover.out ./pdp ./attributes ./protoconv
-      - name: SonarCloud scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Check coverage meets threshold
         run: overcover --coverprofile cover.out ./pdp ./attributes --threshold ${{ env.COVERAGE_THRESH_PCT }}
       - uses: actions/setup-python@v4
